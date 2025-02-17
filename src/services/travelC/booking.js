@@ -3,7 +3,7 @@ export class booking {
     //servicio para obetner todos los registros
     static getBookings = async (bookingReference, micrositeId) => {
         try {
-            const response = await fetch(`https://zettatravel.com/resources/booking/getBookings/${micrositeId}/${bookingReference}`, {
+            const response = await fetch(`${process.env.TRAVELC_BASE_URL}/booking/getBookings/${micrositeId}/${bookingReference}`, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',

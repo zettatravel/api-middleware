@@ -1,3 +1,6 @@
+#general
+.env
+
 # npm
 node_modules
 *.log

@@ -5,7 +5,7 @@ export class auth {
     //servicio para autenticarse con booking
     static authTravelC = async (micrositeId) => {
         try {
-            const request = await fetch('https://zettatravel.com/resources/authentication/authenticate',
+            const request = await fetch(`${process.env.TRAVELC_BASE_URL}/authentication/authenticate`,
                 {
                     method: 'POST',
                     headers: {
@@ -14,8 +14,8 @@ export class auth {
                         'Accept-Encoding': 'gzip, deflate, br',
                     },
                     body: JSON.stringify({
-                        username: "Api.Zetta",
-                        password: "ZettaXML67895#",
+                        username: process.env.USER_TRAVELC,
+                        password: process.env.PASS_TRAVELC,
                         micrositeId: micrositeId
                     })
                 })
