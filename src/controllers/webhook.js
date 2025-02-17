@@ -26,12 +26,12 @@ export class webhookController {
         if (Date.now() >= app.locals.timeTokenTravelC) {
             console.log('Date.now() es mayor o igual que el tiempo del token, debe autenticarse CONTROLLER.JS')
             auth.authTravelC(micrositeId).then(() => console.log('Autenticado CONTROLLER.JS'));
+        }else{
+            console.log('Date.now() es menor que tiempo del token, esta dentro de la hora (no se autentica) CONTROLLER.JS')
         }
 
-        console.log('Date.now() es menor que tiempo del token, esta dentro de la hora (no se autentica) CONTROLLER.JS')
-
         //realizar la busqueda de reserva
-        booking.getBookings(bookingReference, micrositeId).then(bookings => console.log('Reserva recibida: CONTROLLER.JS', bookings));
+        //booking.getBookings(bookingReference, micrositeId).then(bookings => console.log('Reserva recibida: CONTROLLER.JS', bookings));
 
 
         //realizar proceso de zoho
