@@ -1,3 +1,5 @@
+import app from "../../../app.js";
+
 export class booking {
 
     //servicio para obetner todos los registros
@@ -7,7 +9,7 @@ export class booking {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'auth-token': 'token',
+                    'auth-token': app.locals.authTokenTravelC,
                     'Accept-Encoding': 'gzip, deflate, br',
                 }
             })

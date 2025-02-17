@@ -20,7 +20,6 @@ app.use('/webhooks', webhooksRouter);
 app.locals.authTokenTravelC = null;
 app.locals.authTokenZoho = null;
 app.locals.timeTokenTravelC = Date.now();
-app.locals.timeTokenTravelCTest = Date.now() + 3600;
 
 
 app.listen(PORT, () => {
