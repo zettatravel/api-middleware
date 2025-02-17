@@ -2,6 +2,7 @@ import express, {json} from "express";
 import {webhooksRouter} from "./src/routes/webhooks.js";
 const app = express()
 
+process.loadEnvFile()
 app.use(json())
 app.disable('x-powered-by')
 

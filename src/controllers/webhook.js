@@ -2,9 +2,6 @@ import {booking} from "../services/travelC/booking.js";
 import {auth} from "../services/travelC/auth.js";
 import app from "../../app.js";
 
-let authToken = null;
-let tokenExpiration = 0;
-
 export class webhookController {
 
 
