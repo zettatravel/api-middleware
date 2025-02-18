@@ -26,7 +26,7 @@ export class auth {
             console.log('data.expirationInSeconds AUTH.JS: ', data.expirationInSeconds);
 
             app.locals.authTokenTravelC = data.token;
-            console.log("app.locals.authTokenTravelC AUTH.JS: ", app.locals.authTokenTravelC);
+            //console.log("app.locals.authTokenTravelC AUTH.JS: ", app.locals.authTokenTravelC);
 
 
             app.locals.timeTokenTravelC = Date.now() + (data.expirationInSeconds * 1000 ) ;

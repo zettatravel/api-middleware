@@ -5,6 +5,6 @@ export const webhooksRouter = Router()
 
 
 // rutas para que vayan al controlador correspondiente
-webhooksRouter.post(`/travelc/bookings/${process.env.KEY}`, webhookController.travelCBooking);
+webhooksRouter.post(`/travelc/bookings/${process.env.WEBHOOK_KEY}`, webhookController.travelCBooking);
 
 // webhooksRouter.post('/visito/...')
