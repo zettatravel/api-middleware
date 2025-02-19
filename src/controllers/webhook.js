@@ -34,7 +34,5 @@ export class webhookController {
         console.log('Realizo la busqueda CONTROLLER.JS: ',bookings.status )
         //realizar proceso de zoho
 
-c
-
     }
 }
