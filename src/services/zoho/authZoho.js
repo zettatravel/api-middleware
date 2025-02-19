@@ -1,5 +1,4 @@
 import app from "../../../app.js";
-import fetch from "node-fetch";
 import FormData from 'form-data';
 
 export class authZoho {
