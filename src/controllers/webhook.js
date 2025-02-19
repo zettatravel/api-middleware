@@ -20,6 +20,8 @@ export class webhookController {
         //console.log('El micrositio es zettatravel CONTROLLER.JS')
         res.status(200).json({message: 'Webhook recibido'});
 
+        /*
+
         console.log('Controller Date.now() CONTROLLER.JS: ', Date.now())
         console.log('Controller app.locals.timeTokenTravelC CONTROLLER.JS: ', app.locals.timeTokenTravelC)
 
@@ -40,7 +42,7 @@ export class webhookController {
         //realizar la busqueda de reserva
         const bookings = await booking.getBookings(bookingReference, micrositeId);
         console.log('Realizo la busqueda CONTROLLER.JS: ', bookings.id)
-
+*/
         //realizar proceso de zoho
 
         if (Date.now() >= app.locals.timeTokenZoho) {

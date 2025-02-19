@@ -22,7 +22,7 @@ export class authTravelC {
                         password: process.env.PASS_TRAVELC,
                         micrositeId: micrositeId
                     })
-                })
+                });
 
 
             const data = await request.json();
