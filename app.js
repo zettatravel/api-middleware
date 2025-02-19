@@ -5,7 +5,7 @@ const app = express()
 
 app.use(json())
 app.disable('x-powered-by')
-process.loadEnvFile()
+//process.loadEnvFile()
 
 
 
