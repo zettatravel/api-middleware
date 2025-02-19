@@ -31,7 +31,7 @@ export class webhookController {
 
         //realizar la busqueda de reserva
         const bookings = await booking.getBookings(bookingReference, micrositeId);
-        console.log('Realizo la busqueda CONTROLLER.JS: ',bookings.status )
+        console.log('Realizo la busqueda CONTROLLER.JS: ',bookings )
         //realizar proceso de zoho
 
     }
