@@ -27,8 +27,7 @@ export class webhookController {
             console.log('Date.now() de TC es mayor o igual que el tiempo del token, debe autenticarse CONTROLLER.JS')
 
             try {
-                await authTravelC.auth(micrositeId);
-                console.log('Autenticado en TravelC CONTROLLER.JS');
+                authTravelC.auth(micrositeId).then(() => {console.log('Autenticado en TravelC CONTROLLER.JS')});
             } catch (error) {
                 console.error("No Autenticando en TravelC CONTROLLER.JS", error);
             }
