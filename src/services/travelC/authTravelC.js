@@ -1,9 +1,10 @@
-import index from "../../../index.js";
+import app from "../../../app.js";
+import fetch from "node-fetch";
 
-export class auth {
+export class authTravelC {
 
     //servicio para autenticarse con booking
-    static authTravelC = async (micrositeId) => {
+    static auth = async (micrositeId) => {
         try {
             const request = await fetch(`${process.env.TRAVELC_BASE_URL}/authentication/authenticate`,
                 {
@@ -23,16 +24,16 @@ export class auth {
             const data = await request.json();
 
 
-            console.log('data.expirationInSeconds AUTH.JS: ', data.expirationInSeconds);
+            console.log('data.expirationInSeconds AUTH_TRAVELC.JS: ', data.expirationInSeconds);
 
-            index.locals.authTokenTravelC = data.token;
+            app.locals.authTokenTravelC = data.token;
             //console.log("app.locals.authTokenTravelC AUTH.JS: ", app.locals.authTokenTravelC);
 
 
-            index.locals.timeTokenTravelC = Date.now() + (data.expirationInSeconds * 1000 ) ;
+            app.locals.timeTokenTravelC = Date.now() + (data.expirationInSeconds * 1000 ) ;
 
-            console.log("Date.now() AUTH.JS: ", Date.now());
-            console.log("app.locals.timeTokenTravelC AUTH.JS: ", index.locals.timeTokenTravelC);
+            console.log("Date.now() AUTH_TRAVELC.JS: ", Date.now());
+            console.log("app.locals.timeTokenTravelC AUTH_TRAVELC.JS: ", app.locals.timeTokenTravelC);
 
         } catch (err) {
             console.log(err);

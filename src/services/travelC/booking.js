@@ -1,4 +1,4 @@
-import index from "../../../index.js";
+import app from "../../../app.js";
 
 export class booking {
 
@@ -9,7 +9,7 @@ export class booking {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'auth-token': index.locals.authTokenTravelC,
+                    'auth-token': app.locals.authTokenTravelC,
                     'Accept-Encoding': 'gzip, deflate, br',
                 }
             })
