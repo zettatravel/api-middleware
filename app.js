@@ -1,5 +1,5 @@
 import express, {json} from "express";
-import {webhooksRouter} from "../src/routes/webhooks.js";
+import {webhooksRouter} from "./src/routes/webhooks.js";
 
 const app = express()
 
@@ -31,7 +31,6 @@ app.locals.timeTokenTravelC = Date.now();
 app.locals.timeTokenZoho = Date.now();
 
 /*
-// Solo iniciar el servidor en producción (no en el build)
 app.listen(PORT, () => {
     //console.log(`server listening on port http://localhost:${PORT}`);
     console.log("app.locals.timeTokenTravelC del APP.JS: ", app.locals.timeTokenTravelC);

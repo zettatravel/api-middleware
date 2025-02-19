@@ -1,5 +1,5 @@
-import app from "../../../api/app.js";
 import fetch from "node-fetch";
+import app from "../../../app.js";
 
 export class authTravelC {
 

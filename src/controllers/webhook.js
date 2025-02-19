@@ -1,7 +1,7 @@
 import {booking} from "../services/travelC/booking.js";
 import {authTravelC} from "../services/travelC/authTravelC.js";
 import {authZoho} from "../services/zoho/authZoho.js";
-import app from "../../api/app.js";
+import app from "../../app.js";
 
 export class webhookController {
 
