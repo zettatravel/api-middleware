@@ -43,6 +43,10 @@ export class webhookController {
             console.log('Date.now() es menor que tiempo del token, esta dentro de la hora (no se autentica) CONTROLLER.JS')
         }
 
+        //una vez autenticado se realizan dos cosas,
+        //1. se crea el contacto en zoho
+        //2. se crea la reserva en zoho
+
 
 
 
