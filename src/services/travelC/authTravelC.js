@@ -5,6 +5,8 @@ export class authTravelC {
     //servicio para autenticarse con booking
     static auth = async (micrositeId) => {
         try {
+            console.log("Entrando en authTravelC.auth() con micrositeId AUTH_TRAVELC.JS: ", micrositeId);
+
             const request = await fetch(`${process.env.TRAVELC_BASE_URL}/authentication/authenticate`,
                 {
                     method: 'POST',
