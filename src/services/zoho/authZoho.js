@@ -1,4 +1,5 @@
 import app from "../../../app.js";
+import fetch from "node-fetch";
 import FormData from 'form-data';
 
 export class authZoho {
@@ -27,7 +28,7 @@ export class authZoho {
             const data = await request.json();
             console.log('data.expires_in AUTH_ZOHO.JS: ', data.expires_in);
 
-            app.locals.authTokenZoho = data.token;
+            app.locals.authTokenZoho = data.access_token;
             //console.log("app.locals.authTokenTravelC AUTH.JS: ", app.locals.authTokenTravelC);
 
             app.locals.timeTokenZoho = Date.now() + (data.expires_in * 1000 ) ;
