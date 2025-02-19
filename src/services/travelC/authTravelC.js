@@ -6,6 +6,7 @@ export class authTravelC {
     static auth = async (micrositeId) => {
         try {
             console.log("Entrando en authTravelC.auth() con micrositeId AUTH_TRAVELC.JS: ", micrositeId);
+            console.log("process.env.TRAVELC_BASE_URL AUTH_TRAVELC.JS: ", process.env.TRAVELC_BASE_URL);
 
             const request = await fetch(`${process.env.TRAVELC_BASE_URL}/authentication/authenticate`,
                 {
