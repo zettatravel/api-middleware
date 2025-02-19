@@ -1,4 +1,4 @@
-import app from "../../../app.js";
+import index from "../../../index.js";
 
 export class auth {
 
@@ -25,14 +25,14 @@ export class auth {
 
             console.log('data.expirationInSeconds AUTH.JS: ', data.expirationInSeconds);
 
-            app.locals.authTokenTravelC = data.token;
+            index.locals.authTokenTravelC = data.token;
             //console.log("app.locals.authTokenTravelC AUTH.JS: ", app.locals.authTokenTravelC);
 
 
-            app.locals.timeTokenTravelC = Date.now() + (data.expirationInSeconds * 1000 ) ;
+            index.locals.timeTokenTravelC = Date.now() + (data.expirationInSeconds * 1000 ) ;
 
             console.log("Date.now() AUTH.JS: ", Date.now());
-            console.log("app.locals.timeTokenTravelC AUTH.JS: ", app.locals.timeTokenTravelC);
+            console.log("app.locals.timeTokenTravelC AUTH.JS: ", index.locals.timeTokenTravelC);
 
         } catch (err) {
             console.log(err);
@@ -42,24 +42,3 @@ export class auth {
 
 }
 
-/*
-const postBookings = async (nombre, apellido) => {
-  try {
-    const resquest = await fetch("", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        nombre: nombre,
-        apellido: apellido,
-      }),
-    });
-
-    return await response.json();
-
-  } catch (err) {
-    console.log(`error al realizar la resquest ${err}`);
-  }
-};
-*/

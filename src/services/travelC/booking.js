@@ -1,4 +1,4 @@
-import app from "../../../app.js";
+import index from "../../../index.js";
 
 export class booking {
 
@@ -9,7 +9,7 @@ export class booking {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'auth-token': app.locals.authTokenTravelC,
+                    'auth-token': index.locals.authTokenTravelC,
                     'Accept-Encoding': 'gzip, deflate, br',
                 }
             })
@@ -29,24 +29,3 @@ export class booking {
 
 
 }
-
-/*// Funcion para haccer post a CRM Zoho
-const postBookings = async (nombre, apellido) => {
-  try {
-    const resquest = await fetch("", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        nombre: nombre,
-        apellido: apellido,
-      }),
-    });
-
-    return await response.json();
-
-  } catch (err) {
-    console.log(`error al realizar la resquest ${err}`);
-  }
-};*/
