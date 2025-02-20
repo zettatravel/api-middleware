@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import app from "../../../app.js";
 
-export class authTravelC {
+export class AuthTravelC {
 
     //servicio para autenticarse con booking
     static auth = async (micrositeId) => {

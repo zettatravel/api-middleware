@@ -1,9 +1,9 @@
 import fetch from "node-fetch";
 import app from "../../../app.js";
 
-export class booking {
+export class Booking {
 
-    //servicio para obetner todos los registros
+    //servicio para obtener todos los registros
     static getBookings = async (bookingReference, micrositeId) => {
         try {
             const response = await fetch(`${process.env.TRAVELC_BASE_URL}/booking/getBookings/${micrositeId}/${bookingReference}`, {

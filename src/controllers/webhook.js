@@ -1,6 +1,6 @@
-import {booking} from "../services/travelC/booking.js";
-import {authTravelC} from "../services/travelC/authTravelC.js";
-import {authZoho} from "../services/zoho/authZoho.js";
+import {Booking} from "../services/travelC/booking.js";
+import {AuthTravelC} from "../services/travelC/authTravelC.js";
+import {AuthZoho} from "../services/zoho/authZoho.js";
 import app from "../../app.js";
 
 export class webhookController {
@@ -28,7 +28,7 @@ export class webhookController {
             console.log('Date.now() de TC es mayor o igual que el tiempo del token, debe autenticarse CONTROLLER.JS')
 
             try {
-                await authTravelC.auth(micrositeId);
+                await AuthTravelC.auth(micrositeId);
                 console.log('Autenticado en TravelC CONTROLLER.JS');
             } catch (error) {
                 console.error("No Autenticando en TravelC CONTROLLER.JS", error);
@@ -39,7 +39,7 @@ export class webhookController {
         }
 
         //realizar la busqueda de reserva
-        const bookings = await booking.getBookings(bookingReference, micrositeId);
+        const bookings = await Booking.getBookings(bookingReference, micrositeId);
         console.log('Realizo la busqueda CONTROLLER.JS: ', bookings.id)
 
         //realizar proceso de zoho
@@ -48,7 +48,7 @@ export class webhookController {
             console.log('Date.now() de ZOHO es mayor o igual que el tiempo del token, debe autenticarse CONTROLLER.JS')
 
             try {
-                await authZoho.auth();
+                await AuthZoho.auth();
                 console.log('Autenticado en Zoho CONTROLLER.JS');
             } catch (error) {
                 console.error("No Autenticando en Zoho CONTROLLER.JS", error);

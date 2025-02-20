@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import FormData from 'form-data';
 import app from "../../../app.js";
 
-export class authZoho {
+export class AuthZoho {
 
     static auth = async () => {
 
