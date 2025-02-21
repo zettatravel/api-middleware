@@ -9,7 +9,7 @@ export class AuthTravelC {
             console.log("Entrando en authTravelC.auth() con micrositeId AUTH_TRAVELC.JS: ", micrositeId);
             console.log("process.env.TRAVELC_BASE_URL AUTH_TRAVELC.JS: ", process.env.TRAVELC_BASE_URL);
 
-            const request = await fetch('https://zettatravel.com/resources/authentication/authenticate',
+            const request = await fetch(`${process.env.TRAVELC_BASE_URL}/authentication/authenticate`,
                 {
                     method: 'POST',
                     headers: {

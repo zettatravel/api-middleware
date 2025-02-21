@@ -2,6 +2,10 @@ import {Booking} from "../services/travelC/booking.js";
 import {AuthTravelC} from "../services/travelC/authTravelC.js";
 import {AuthZoho} from "../services/zoho/authZoho.js";
 import app from "../../app.js";
+import {Deal} from "../services/zoho/deal.js";
+import {Lead} from "../services/zoho/lead.js";
+import {mapBookingToLead} from "../mappers/zoho/leadMapping.js";
+import {Owner} from "../services/zoho/owner.js";
 
 export class webhookController {
 
@@ -19,7 +23,6 @@ export class webhookController {
 
         //console.log('El micrositio es zettatravel CONTROLLER.JS')
         res.status(200).json({message: 'Webhook recibido'});
-
 
         console.log('Controller Date.now() CONTROLLER.JS: ', Date.now())
         console.log('Controller app.locals.timeTokenTravelC CONTROLLER.JS: ', app.locals.timeTokenTravelC)
@@ -39,11 +42,13 @@ export class webhookController {
         }
 
         //realizar la busqueda de reserva
-        const bookings = await Booking.getBookings(bookingReference, micrositeId);
-        console.log('Realizo la busqueda CONTROLLER.JS: ', bookings.id)
+        const booking = await Booking.getBookings(bookingReference, micrositeId);
+        console.log('Realizo la busqueda CONTROLLER.JS: ', booking.id)
+
+        //alamacenar el correo de la reserva
+        const email = booking.contactPerson.email.toString()
 
         //realizar proceso de zoho
-
         if (Date.now() >= app.locals.timeTokenZoho) {
             console.log('Date.now() de ZOHO es mayor o igual que el tiempo del token, debe autenticarse CONTROLLER.JS')
 
@@ -58,10 +63,60 @@ export class webhookController {
             console.log('Date.now() de ZOHO es menor que tiempo del token, esta dentro de la hora (no se autentica) CONTROLLER.JS')
         }
 
-        //una vez autenticado se realizan dos cosas,
-        //1. se crea el contacto en zoho
-        //2. se crea la reserva en zoho
+        const lead = await Lead.getLeadByEmail(email);
 
+        //verificacion si el lead existe
+        if (lead) {
+            // se convierte en deal
+            console.log(lead.data[0].Email);
+
+        } else {
+            console.log('No hay Conincidencias de lead se procede a crear Lead');
+
+            const id_user = await Owner.getOwner(email)
+
+            console.log("id del usuario CONTROLLER.JS: ",id_user)
+            // creacion del mapeo para insertar el newe lead
+            const newLead = mapBookingToLead(booking, id_user);
+
+            console.log(JSON.stringify(newLead, null, 2));
+
+            //Creacion del Lead
+
+            try {
+                await Lead.createLead(newLead)
+                console.log('Lead Creado CONTROLLER.JS');
+            } catch (error) {
+                console.error("Lead No Creado CONTROLLER.JS", error);
+            }
+
+        }
+
+        // se verifica si la creacion del lead es exitosa
+        // Se envia mensaje de creacion exitosa
+
+
+        //.then((lead)=>{console.log(lead.data[0].Email)});
+
+
+        //una vez autenticado se realizan dos cosas,
+
+        //1. se verifica si el lead existe
+        // => Si Existe:
+        //      se convierte a deal
+        // => Si No Existe:
+        //      Se crea, se verifica que se creo
+        //      Se convierte en deal
+        // se verifica si la creacion del lead es exitosa
+        // Se envia mensaje de creacion exitosa
 
     }
 }
+
+
+// console.log(lead.data[0].Email); // Acceder al email
+// console.log(lead.data[0].Owner); // Esto imprimirá [Object]
+
+// Si Owner es un objeto, accede a sus propiedades:
+// console.log(lead.data[0].Owner.id);
+// console.log(lead.data[0].Owner.name);

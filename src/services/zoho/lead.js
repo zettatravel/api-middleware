@@ -7,6 +7,7 @@ export class Lead {
     //servicio para obtener todos los leads
 
 
+
     //servicio para obtener Lead por correo
     static getLeadByEmail = async (email) => {
         try {
@@ -20,7 +21,23 @@ export class Lead {
                 }
             });
 
-            return response.json();
+            // Respuesta no existosa
+            if (!response.ok) {
+                console.error(`Error en la respuesta getLeadByEmail LEAD.JS: ${response.status} ${response.statusText}`);
+                return null;
+            }
+
+            //respuesta a texto
+            const responseText = await response.text();
+
+            //si la respuesta es vacia
+            if (!responseText) {
+                console.error("No hay coincidencias de correo getLeadByEmail LEAD.JS");
+                return null;
+            }
+
+            // Convertir a JSON solo si tiene contenido
+            return JSON.parse(responseText);
 
         } catch (err) {
             console.log(`error al obtener la response ${err}`);
@@ -28,57 +45,33 @@ export class Lead {
         }
     }
 
-
     //servicio para crear un Lead
-    static createLead = async (data) => {
+    static createLead = async (newLead) => {
+        console.log('app.locals.authTokenZoho LEAD.JS:', app.locals.authTokenZoho)
+
         try {
-            const request = await fetch(`${process.env.ZOHO_BASE_URL}/v7/Leads`, {
+            const request = await fetch('https://www.zohoapis.com/crm/v2/Leads', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Zoho-oauthtoken ${process.env.ZOHO_AUTH_TOKEN}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Authorization': `Zoho-oauthtoken ${app.locals.authTokenZoho}`,
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    data: [
-                        {
-                            Owner: {id: 6382205000000476001},
-                            Full_Name: "Otoniel Vicente",
-                            Phone: "5532956998",
-                            Mobile: "611063910",
-                            Designation: "Lead de Pueba de API",
-                            Lead_Source: "Facebook",
-                            Presupuesto: "10000",
-                            Company: "Zetta",
-                            Last_Name: "Dominguez Gonzalez",
-                            Email: "test@gmail.com",
-                            Website: "zetta.com",
-                            Lead_Status: "New Leads",
-                            Rating: "Active",
-                            Secondary_Email: "oto@test.com",
-                            Currency: "MXN",
-                            Street: "Josefa",
-                            State: "Zumpango",
-                            Country: "México",
-                            City: "Estado de Mexico",
-                            Zip_Code: "55628",
-                            Description: "Descripción del texto"
-                        }
-                    ]
-                })
-
+                body: JSON.stringify(newLead)
 
             });
 
             // Validar si la respuesta es exitosa
             if (!request.ok) {
-                throw new Error(`HTTP Error! Status: ${request.status}`);
+                console.error(`Error en la respuesta createLead LEAD.JS: ${request.status} ${request.statusText}`);
+                return null;
             }
 
             // Convertir la respuesta a JSON
             const responseData = await request.json();
-            console.log('✅ Lead creado correctamente:', responseData);
+            console.log('Lead creado correctamente: ', JSON.stringify(responseData, null, 2));
+
             return responseData;
+
 
         } catch (err) {
             console.log(`error al obtener la response ${err}`);
@@ -88,8 +81,6 @@ export class Lead {
     }
 
 
-
     //servicio para convertir un lead
-
 
 }

@@ -15,6 +15,12 @@ export class Booking {
                 }
             })
 
+            // se verifica que la respuesta no sea la correcta
+            if (!response.ok) {
+                console.error(`Error en la respuesta getBookings LEAD.JS: ${response.status} ${response.statusText}`);
+                return null;
+            }
+
             return response.json();
 
         } catch (err) {
