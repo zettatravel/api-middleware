@@ -80,7 +80,6 @@ export class Lead {
 
     }
 
-
     //servicio para convertir un lead
 
 }

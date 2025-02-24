@@ -6,6 +6,7 @@ import {Deal} from "../services/zoho/deal.js";
 import {Lead} from "../services/zoho/lead.js";
 import {mapBookingToLead} from "../mappers/zoho/leadMapping.js";
 import {Owner} from "../services/zoho/owner.js";
+import {retryPattern} from "../utils/retryUtils.js";
 
 export class webhookController {
 
@@ -43,10 +44,15 @@ export class webhookController {
 
         //realizar la busqueda de reserva
         const booking = await Booking.getBookings(bookingReference, micrositeId);
-        console.log('Realizo la busqueda CONTROLLER.JS: ', booking.id)
 
-        //alamacenar el correo de la reserva
-        const email = booking.contactPerson.email.toString()
+
+        console.log('Realizo la busqueda CONTROLLER.JS: ', JSON.stringify(booking, null, 2));
+
+        //almacenar el correo del lead de la reserva
+        const email = booking.contactPerson.email.toString().toLowerCase()
+
+        //almacenar el correo del Owner o de quien realiza la reserva
+        const email_owner = booking.user.email.toString().toLowerCase()
 
         //realizar proceso de zoho
         if (Date.now() >= app.locals.timeTokenZoho) {
@@ -65,17 +71,15 @@ export class webhookController {
 
         const lead = await Lead.getLeadByEmail(email);
 
-        //verificacion si el lead existe
-        if (lead) {
-            // se convierte en deal
-            console.log(lead.data[0].Email);
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-        } else {
+        //verificacion si el lead existe
+        if (!lead) {
             console.log('No hay Conincidencias de lead se procede a crear Lead');
 
-            const id_user = await Owner.getOwner(email)
+            const id_user = await Owner.getOwner(email_owner)
 
-            console.log("id del usuario CONTROLLER.JS: ",id_user)
+            console.log("id del usuario CONTROLLER.JS: ", id_user)
             // creacion del mapeo para insertar el newe lead
             const newLead = mapBookingToLead(booking, id_user);
 
@@ -89,30 +93,41 @@ export class webhookController {
             } catch (error) {
                 console.error("Lead No Creado CONTROLLER.JS", error);
             }
-
         }
 
-        // se verifica si la creacion del lead es exitosa
-        // Se envia mensaje de creacion exitosa
+        // se realizan seis intentos cada 30 segundos para ver si se creo
+        const verificacionLead = await retryPattern(Lead.getLeadByEmail, [email], 6, 30000);
+        console.log('verificacionLead CONTROLLER.JS:', verificacionLead);
 
 
-        //.then((lead)=>{console.log(lead.data[0].Email)});
+        console.log('Verificacion de email: ', email)
+        console.log('Fin del Controller CONTROLLER.JS')
 
-
-        //una vez autenticado se realizan dos cosas,
-
-        //1. se verifica si el lead existe
-        // => Si Existe:
-        //      se convierte a deal
-        // => Si No Existe:
-        //      Se crea, se verifica que se creo
-        //      Se convierte en deal
-        // se verifica si la creacion del lead es exitosa
-        // Se envia mensaje de creacion exitosa
 
     }
+
 }
 
+
+//convertir lead en deal
+
+// se verifica si la creacion del lead es exitosa
+// Se envia mensaje de creacion exitosa
+
+
+//.then((lead)=>{console.log(lead.data[0].Email)});
+
+
+//una vez autenticado se realizan dos cosas,
+
+//1. se verifica si el lead existe
+// => Si Existe:
+//      se convierte a deal
+// => Si No Existe:
+//      Se crea, se verifica que se creo
+//      Se convierte en deal
+// se verifica si la creacion del lead es exitosa
+// Se envia mensaje de creacion exitosa
 
 // console.log(lead.data[0].Email); // Acceder al email
 // console.log(lead.data[0].Owner); // Esto imprimirá [Object]

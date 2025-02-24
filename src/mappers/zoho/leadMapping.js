@@ -15,7 +15,7 @@ export const mapBookingToLead = (booking, id_user) => {
                 Company: booking.user.agency.name, // Nombre Compañía
                 //First_Name: booking.contactPerson.name, // Nombre
                 Last_Name: booking.contactPerson.lastName, // Apellido
-                Email: booking.contactPerson.email, // Correo
+                Email: booking.contactPerson.email.toLowerCase(), // Correo
                 Website: "https://zettatravel.com/", // Dato fijo
                 Lead_Status: "Facebook", // Estado fijo
                 Rating: "Active", // Calificación fija

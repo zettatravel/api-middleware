@@ -33,8 +33,8 @@ export class AuthTravelC {
             app.locals.authTokenTravelC = data.token;
             //console.log("app.locals.authTokenTravelC AUTH.JS: ", app.locals.authTokenTravelC);
 
-
-            app.locals.timeTokenTravelC = Date.now() + (data.expirationInSeconds * 1000 ) ;
+            // el token sera no de una hora de tiempo sino de diez minutos para evitar problemas con las busquedas
+            app.locals.timeTokenTravelC = Date.now() + (data.expirationInSeconds * 1000 ) - (600 * 1000) ;
 
             console.log("Date.now() AUTH_TRAVELC.JS: ", Date.now());
             console.log("app.locals.timeTokenTravelC AUTH_TRAVELC.JS: ", app.locals.timeTokenTravelC);
