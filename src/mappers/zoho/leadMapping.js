@@ -6,14 +6,13 @@ export const mapBookingToLead = (booking, id_user) => {
                 Owner: {
                     id: id_user // Id del Owner o User
                 },
-                Full_Name: " ",
                 Phone: "",//`${booking.contactPerson.phoneCountryCode}${booking.contactPerson.phone}`, // Celular
                 Mobile: "", //`${booking.contactPerson.phoneCountryCode}${booking.contactPerson.phone}`, // Celular
                 Designation: `${booking.contactPerson.name} TravelC`, // Nombre + TravelC
                 Lead_Source: "Online Store", // Dato fijo
                 Presupuesto: booking.pricebreakdown.totalPrice.microsite.amount.toString(), // Monto total
                 Company: booking.user.agency.name, // Nombre Compañía
-                //First_Name: booking.contactPerson.name, // Nombre
+                First_Name: booking.contactPerson.name, // Nombre
                 Last_Name: booking.contactPerson.lastName, // Apellido
                 Email: booking.contactPerson.email.toLowerCase(), // Correo
                 Website: "https://zettatravel.com/", // Dato fijo

@@ -7,6 +7,7 @@ import {Lead} from "../services/zoho/lead.js";
 import {mapBookingToLead} from "../mappers/zoho/leadMapping.js";
 import {Owner} from "../services/zoho/owner.js";
 import {retryPattern} from "../utils/retryUtils.js";
+import {mapBookingToDeal} from "../mappers/zoho/dealMapping.js";
 
 export class webhookController {
 
@@ -71,6 +72,7 @@ export class webhookController {
 
         const lead = await Lead.getLeadByEmail(email);
 
+
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
         //verificacion si el lead existe
@@ -99,8 +101,19 @@ export class webhookController {
         const verificacionLead = await retryPattern(Lead.getLeadByEmail, [email], 6, 30000);
         console.log('verificacionLead CONTROLLER.JS:', verificacionLead);
 
+        // una vez creado el lead y verificado correctamente se procede a realizar la conversion a deal
+        console.log('verificacionLead CONTROLLER.JS:', verificacionLead.data[0].id);
 
-        console.log('Verificacion de email: ', email)
+        const id_user = await Owner.getOwner(email_owner)
+        const newDeal = mapBookingToDeal(booking, id_user)
+
+        try {
+            await Lead.convertLead(newDeal, verificacionLead.data[0].id )
+            console.log('Lead Creado CONTROLLER.JS');
+        } catch (error) {
+            console.error("Lead No Creado CONTROLLER.JS", error);
+        }
+
         console.log('Fin del Controller CONTROLLER.JS')
 
 

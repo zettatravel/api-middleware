@@ -81,5 +81,39 @@ export class Lead {
     }
 
     //servicio para convertir un lead
+    static convertLead = async (newDeal,id_lead) => {
+        console.log('app.locals.authTokenZoho LEAD.JS:', app.locals.authTokenZoho)
+
+        try {
+            const request = await fetch(`https://www.zohoapis.com/crm/v2/Leads/${id_lead}/actions/convert`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Zoho-oauthtoken ${app.locals.authTokenZoho}`,
+                    'Content-Type': 'application/json',
+                    'Connection': 'keep-alive'
+                },
+                body: JSON.stringify(newDeal)
+
+            });
+
+            // Validar si la respuesta es exitosa
+            if (!request.ok) {
+                console.error(`Error en la respuesta convertLead LEAD.JS: ${request.status} ${request.statusText}`);
+                return null;
+            }
+
+            // Convertir la respuesta a JSON
+            const responseData = await request.json();
+            console.log('Deal creado correctamente: ', JSON.stringify(responseData, null, 2));
+
+            return responseData;
+
+
+        } catch (err) {
+            console.log(`error al obtener la response ${err}`);
+            return null;
+        }
+
+    }
 
 }
