@@ -109,13 +109,16 @@ export class webhookController {
 
         try {
             await Lead.convertLead(newDeal, verificacionLead.data[0].id )
-            console.log('Lead Creado CONTROLLER.JS');
+            console.log('Deal Creado CONTROLLER.JS');
         } catch (error) {
-            console.error("Lead No Creado CONTROLLER.JS", error);
+            console.error("Deal No Creado CONTROLLER.JS", error);
         }
 
-        console.log('Fin del Controller CONTROLLER.JS')
+        // se realizan seis intentos cada 30 segundos para ver si se creo
+        //const verificacionDeal = await retryPattern(Deal.getDeals(), [], 6, 30000);
+        //console.log('verificacionLead CONTROLLER.JS:', verificacionLead);
 
+        console.log('Fin del Controller CONTROLLER.JS')
 
     }
 
