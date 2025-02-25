@@ -30,11 +30,51 @@ export class Deal {
 */
 
             return await response.json();
+
         } catch (err) {
             console.log(`error al obtener la response ${err}`);
             return null;
         }
     }
+
+
+
+    static getDealByEmail = async (id) => {
+        try {
+            const response = await fetch(`${process.env.ZOHO_BASE_URL}/v2/Deals/search?criteria=(id:equals:${id})`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Zoho-oauthtoken ${app.locals.authTokenZoho}`,
+                    'Accept': '*/*',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive'
+                }
+            });
+
+            // Respuesta no existosa
+            if (!response.ok) {
+                console.error(`Error en la respuesta getLeadByEmail LEAD.JS: ${response.status} ${response.statusText}`);
+                return null;
+            }
+
+            //respuesta a texto
+            const responseText = await response.text();
+
+            //si la respuesta es vacia
+            if (!responseText) {
+                console.error("No hay coincidencias de correo getLeadByEmail LEAD.JS");
+                return null;
+            }
+
+            // Convertir a JSON solo si tiene contenido
+            return JSON.parse(responseText);
+
+        } catch (err) {
+            console.log(`error al obtener la response ${err}`);
+            return null;
+        }
+    }
+
 
 
 

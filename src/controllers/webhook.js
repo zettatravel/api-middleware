@@ -113,15 +113,20 @@ export class webhookController {
         console.log(JSON.stringify(newDeal, null, 2));
 
         try {
-            await Lead.convertLead(newDeal, verificacionLead.data[0].id )
-            console.log('Deal Creado CONTROLLER.JS');
+            const dealNew = await Lead.convertLead(newDeal, verificacionLead.data[0].id )
+
+            console.log('Deal Creado CONTROLLER.JS', dealNew);
+
+            //const verificacionDeal = await retryPattern(Deal.getDealByEmail, [dealNew.data[0].Accounts], 6, 30000);
+            // se realizan seis intentos cada 30 segundos para ver si se creo
+            //console.log('verificacionDeal CONTROLLER.JS:', verificacionDeal);
+
         } catch (error) {
             console.error("Deal No Creado CONTROLLER.JS", error);
         }
 
         // se realizan seis intentos cada 30 segundos para ver si se creo
-        //const verificacionDeal = await retryPattern(Deal.getDeals(), [], 6, 30000);
-        //console.log('verificacionLead CONTROLLER.JS:', verificacionLead);
+        console.log('verificacionDeal CONTROLLER.JS:', verificacionDeal);
 
         console.log('Fin del Controller CONTROLLER.JS')
 
