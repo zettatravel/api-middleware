@@ -15,10 +15,10 @@ export const mapBookingToDeal = (booking, id_user, lead) => {
                     Fecha_de_viaje: formatDate(booking.startDate ?? ""), // Fecha de viaje
                     Closing_Date: formatDate(new Date()?? ""), // Fecha de reserva (hoy)
                     Stage: "Qualification", // Estado de la reserva
-                    Contacto_de_Emergencia: booking.emergencyContact.emergencyContactName ?? "No existe",
+                    Contacto_de_Emergencia: toCapitalizedCase(booking.emergencyContact.emergencyContactName) ?? "No Existe",
                     Tel_fono_Contacto_de_emergencia: booking.emergencyContact.emergencyContactPhone ?? "000000",
                     Amount: booking.pricebreakdown.totalPrice.microsite.amount ?? 0, // Monto total
-                    Description: "Deal Generado automáticamente por API-MIDDLEWARE",
+                    Description: "Deal Generado automáticamente por Api-Middleware",
                     Currency: booking.pricebreakdown.totalPrice.microsite.currency ?? "",
                     Ingeniero_Preventa: id_user, // ID del Owner
                     Partner: id_user, // ID del Owner,
@@ -27,7 +27,7 @@ export const mapBookingToDeal = (booking, id_user, lead) => {
                     Total_Asistencia_Adicional : booking.insuranceservice.length > 0 ? booking.insuranceservice[0].pricebreakdown.totalPrice.microsite.amount : 0,
                     Destino_de_inter_s: lead.Destino_de_inter_s ?? "No Hay",
                     Fecha_creado_como_New_Lead: lead.Created_Time ?? formatDate(new Date()?? ""),
-                    N_mero_de_Pax: "668456651" ?? "",
+                    N_mero_de_Pax: booking.adultCount.toString() ?? "1",
                     Lead_Generado_en: "Otros" ?? ""
                 }
             }
