@@ -34,3 +34,17 @@ export const mapBookingToDeal = (booking, id_user) => {
         ]
     };
 };
+
+/*
+
+"Account_Name": {
+                "name": "Zetta Travel Group Travelc",
+                "id": "6382205000018251091"
+            },
+
+
+            Account_Name:{
+                    name:
+                    id:
+                }
+ */

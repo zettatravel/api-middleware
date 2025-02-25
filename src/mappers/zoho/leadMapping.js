@@ -13,7 +13,7 @@ export const mapBookingToLead = (booking, id_user) => {
                 Designation: toCapitalizedCase(`${booking.contactPerson.name ?? ""} TravelC`), // Nombre + TravelC
                 Lead_Source: "Online Store", // Dato fijo
                 Presupuesto: booking.pricebreakdown.totalPrice.microsite.amount.toString() ?? "", // Monto total
-                Company: toCapitalizedCase(`${booking.user.agency.name ?? ""} TravelC`), // Nombre Compañía
+                Company: toCapitalizedCase(`${(booking.contactPerson.name ?? "")} TEST ${booking.contactPerson.lastName ?? ""}`) , // toCapitalizedCase(`${booking.user.agency.name ?? ""} TravelC`),
                 First_Name: toCapitalizedCase(`${booking.contactPerson.name ?? ""} TEST`), // Nombre
                 Last_Name: toCapitalizedCase(booking.contactPerson.lastName) ?? "", // Apellido
                 Email: booking.contactPerson.email.toLowerCase() ?? "", // Correo
