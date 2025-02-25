@@ -14,7 +14,6 @@ export async function retryPattern(fetchFunction, params = [], attempts, timeOut
             return verificacion;
         }
 
-
     }
 
     console.log('⚠️ No se encontró el registro después de varios intentos.');

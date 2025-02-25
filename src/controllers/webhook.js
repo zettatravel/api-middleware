@@ -104,6 +104,7 @@ export class webhookController {
         // una vez creado el lead y verificado correctamente se procede a realizar la conversion a deal
         console.log('verificacionLead CONTROLLER.JS:', verificacionLead.data[0].id);
 
+        /*
         const id_user = await Owner.getOwner(email_owner)
         const newDeal = mapBookingToDeal(booking, id_user)
 
@@ -117,7 +118,7 @@ export class webhookController {
         // se realizan seis intentos cada 30 segundos para ver si se creo
         //const verificacionDeal = await retryPattern(Deal.getDeals(), [], 6, 30000);
         //console.log('verificacionLead CONTROLLER.JS:', verificacionLead);
-
+*/
         console.log('Fin del Controller CONTROLLER.JS')
 
     }
