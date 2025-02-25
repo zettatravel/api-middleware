@@ -31,7 +31,7 @@ export class Owner {
 
 
         } catch (err) {
-            console.log(`error al obtener la response ${err}`);
+            console.log(`error al obtener la response OWNER.JS: ${err}`);
             return null;
         }
 

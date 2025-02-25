@@ -15,11 +15,11 @@ export class webhookController {
 
         //recibir los datos del request
         const {micrositeId, bookingReference, type} = req.body;
-        console.log('bookingReference CONTROLLER.JS: ', bookingReference);
+        console.log('[CONTROLLER.JS] - Request recibido', bookingReference);
 
-        //verificar los datos del request
+        //verificar que el microsite sea Zettatravel
         if (micrositeId !== 'zettatravel') {
-            console.log('El microsite es diferente a zettatravel, Retorna y no hace mas CONTROLLER.JS');
+            console.log('[CONTROLLER.JS] - El microsite es diferente a zettatravel, Retorna y no se hace mas ');
             return res.status(200).json({message: 'Webhook recibido'});
         }
 
@@ -54,6 +54,7 @@ export class webhookController {
 
         //almacenar el correo del Owner o de quien realiza la reserva
         const email_owner = booking.user.email.toString().toLowerCase()
+        console.log('email_owner CONTROLLER.JS: ', email_owner)
 
         //realizar proceso de zoho
         if (Date.now() >= app.locals.timeTokenZoho) {
@@ -81,7 +82,7 @@ export class webhookController {
 
             const id_user = await Owner.getOwner(email_owner)
 
-            console.log("id del usuario CONTROLLER.JS: ", id_user)
+            console.log("id del Owner CONTROLLER.JS: ", id_user)
             // creacion del mapeo para insertar el newe lead
             const newLead = mapBookingToLead(booking, id_user);
 
@@ -104,7 +105,7 @@ export class webhookController {
         // una vez creado el lead y verificado correctamente se procede a realizar la conversion a deal
         console.log('verificacionLead CONTROLLER.JS:', verificacionLead.data[0].id);
 
-        /*
+
         const id_user = await Owner.getOwner(email_owner)
         const newDeal = mapBookingToDeal(booking, id_user)
 
@@ -118,7 +119,7 @@ export class webhookController {
         // se realizan seis intentos cada 30 segundos para ver si se creo
         //const verificacionDeal = await retryPattern(Deal.getDeals(), [], 6, 30000);
         //console.log('verificacionLead CONTROLLER.JS:', verificacionLead);
-*/
+
         console.log('Fin del Controller CONTROLLER.JS')
 
     }
