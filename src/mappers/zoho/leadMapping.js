@@ -27,3 +27,5 @@ export const mapBookingToLead = (booking, id_user) => {
         ]
     };
 };
+
+

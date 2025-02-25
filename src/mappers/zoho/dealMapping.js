@@ -1,6 +1,7 @@
 import {formatDate} from "../../utils/dateUtils.js";
+import {toCapitalizedCase} from "../../utils/stringUtils.js";
 
-export const mapBookingToDeal = (booking, id_user) => {
+export const mapBookingToDeal = (booking, id_user, lead) => {
     return {
         data: [
             {
@@ -10,25 +11,24 @@ export const mapBookingToDeal = (booking, id_user) => {
                 assign_to: id_user, // ID del Owner
 
                 Deals: {
-                    Deal_Name: `${booking.bookingReference.toUpperCase()} / ${booking.contactPerson.name.toUpperCase()} ${booking.contactPerson.lastName.toUpperCase()} / X ${booking.destinationCount} / ${formatDate(booking.startDate)}`, //${booking.closedtourservice.name.toUpperCase()}
-                    Fecha_de_viaje: formatDate(booking.startDate), // Fecha de viaje
-                    Closing_Date: formatDate(new Date()), // Fecha de reserva (hoy)
+                    Deal_Name: `${booking.bookingReference.toUpperCase() ?? ""} / ${booking.contactPerson.name.toUpperCase() ?? ""} ${booking.contactPerson.lastName.toUpperCase() ?? ""} / X ${booking.destinationCount ?? ""} / ${booking.closedtourservice.length > 0 ? booking.closedtourservice[0].name.toUpperCase() : ""} / ${formatDate(booking.startDate) ?? ""}`,
+                    Fecha_de_viaje: formatDate(booking.startDate ?? ""), // Fecha de viaje
+                    Closing_Date: formatDate(new Date()?? ""), // Fecha de reserva (hoy)
                     Stage: "Qualification", // Estado de la reserva
-                    Contacto_de_Emergencia: "Contacto_de_Emergencia" ,//booking.emergencyContact.emergencyContactName || "",
-                    Tel_fono_Contacto_de_emergencia: "3204478514",//booking.emergencyContact.emergencyContactPhone || "",
-                    Amount: booking.pricebreakdown.totalPrice.microsite.amount || 0, // Monto total
+                    Contacto_de_Emergencia: booking.emergencyContact.emergencyContactName ?? "No existe",
+                    Tel_fono_Contacto_de_emergencia: booking.emergencyContact.emergencyContactPhone ?? "000000",
+                    Amount: booking.pricebreakdown.totalPrice.microsite.amount ?? 0, // Monto total
                     Description: "Deal Generado automáticamente por API-MIDDLEWARE",
-                    Currency: booking.pricebreakdown.totalPrice.microsite.currency || "",
+                    Currency: booking.pricebreakdown.totalPrice.microsite.currency ?? "",
                     Ingeniero_Preventa: id_user, // ID del Owner
                     Partner: id_user, // ID del Owner,
-                    Tipo_De_Reserva: "Closedtour",
-                    Asistencia: ["SI"],
-                    Total_Asistencia_Adicional: 150,
-                    Destino_de_inter_s: "Turquía y Egipto",
-                    Fecha_creado_como_New_Lead: "2025-02-24",
-                    N_mero_de_Pax: "668456651",
-                    Lead_Generado_en: "Otros"
-
+                    Tipo_De_Reserva: toCapitalizedCase(booking.tripType) ?? "",
+                    Asistencia: booking.insuranceservice.length > 0 ? ["SI"] : ["NO"],
+                    Total_Asistencia_Adicional : booking.insuranceservice.length > 0 ? booking.insuranceservice[0].pricebreakdown.totalPrice.microsite.amount : 0,
+                    Destino_de_inter_s: lead.Destino_de_inter_s ?? "No Hay",
+                    Fecha_creado_como_New_Lead: lead.Created_Time ?? formatDate(new Date()?? ""),
+                    N_mero_de_Pax: "668456651" ?? "",
+                    Lead_Generado_en: "Otros" ?? ""
                 }
             }
         ]
@@ -36,6 +36,10 @@ export const mapBookingToDeal = (booking, id_user) => {
 };
 
 /*
+
+console.log(booking.closedtourservice[0].name);
+
+
 
 "Account_Name": {
                 "name": "Zetta Travel Group Travelc",

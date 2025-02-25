@@ -107,8 +107,10 @@ export class webhookController {
 
 
         const id_user = await Owner.getOwner(email_owner)
-        const newDeal = mapBookingToDeal(booking, id_user)
+        const newDeal = mapBookingToDeal(booking, id_user,verificacionLead)
         console.log('verificacionLead.data[0].id: ',verificacionLead.data[0].id)
+        console.log('verificacionLead.Destino_de_inter_s: ', verificacionLead.Destino_de_inter_s)
+        console.log(JSON.stringify(newDeal, null, 2));
 
         try {
             await Lead.convertLead(newDeal, verificacionLead.data[0].id )
