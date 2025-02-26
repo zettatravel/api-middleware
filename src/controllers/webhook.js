@@ -91,18 +91,16 @@ export class webhookController {
         logger.debug(`Lead ID: ${lead.data[0].id}`);
 
         // una vez creado el lead y verificado correctamente se procede a realizar la conversion a deal
+        // creacion del mapeo para convertir lead a deal
         const newDeal = mapBookingToDeal(booking, OwnerId,lead)
-
-        console.log('verificacionLead.data[0].id: ',lead.data[0].id)
-        console.log('verificacionLead.Destino_de_inter_s: ', lead.Destino_de_inter_s)
-        console.log(JSON.stringify(newDeal, null, 2));
+        logger.debug(`New deal mapped: ${newDeal.data[0].Deals.Deal_Name}}`);
 
         try {
-            const dealNew = await Lead.convertLead(newDeal, lead.data[0].id )
+            const deal = await Lead.convertLead(newDeal, lead.data[0].id )
 
-            console.log('Deal Creado CONTROLLER.JS', dealNew);
+            console.log('Deal Creado CONTROLLER.JS', deal);
 
-            const verificacionDeal = await retryPattern(Deal.getDealByEmail, [dealNew.data[0].Deals.toString()], 6, 10000);
+            const verificacionDeal = await retryPattern(Deal.getDealByEmail, [deal.data[0].Deals.toString()], 6, 10000);
             // se realizan seis intentos cada 30 segundos para ver si se creo
             console.log('verificacionDeal CONTROLLER.JS:', verificacionDeal);
 
