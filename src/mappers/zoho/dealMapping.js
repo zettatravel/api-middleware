@@ -5,7 +5,7 @@ export const mapBookingToDeal = (booking, id_user, lead) => {
     return {
         data: [
             {
-                overwrite: false, // Nombre Lead + TravelC
+                overwrite: false,
                 notify_lead_owner: false,
                 notify_new_entity_owner: false,
                 assign_to: id_user, // ID del Owner

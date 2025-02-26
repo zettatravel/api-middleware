@@ -1,5 +1,6 @@
 import express, {json} from "express";
 import {webhooksRouter} from "./src/routes/webhooks.js";
+import {logger} from "./src/utils/logUtils.js";
 
 const app = express()
 
@@ -32,9 +33,9 @@ app.locals.timeTokenZoho = Date.now();
 
 
 app.listen(PORT, () => {
-    //console.log(`server listening on port http://localhost:${PORT}`);
-    console.log("app.locals.timeTokenTravelC del APP.JS: ", app.locals.timeTokenTravelC);
-    //console.log("process.env.WEBHOOK_KEY APP.JS: ", `/travelc/bookings/${process.env.WEBHOOK_KEY}`);
+
+    logger.debug(`Server running on http://localhost:${PORT}`);
+    logger.debug(`Enviroment: ${process.env.NODE_ENV}`);
 });
 
 

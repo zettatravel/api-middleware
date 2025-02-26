@@ -53,7 +53,7 @@ export class Deal {
 
             // Respuesta no existosa
             if (!response.ok) {
-                console.error(`Error en la respuesta getLeadByEmail LEAD.JS: ${response.status} ${response.statusText}`);
+                console.error(`Error en la respuesta getDealByEmail LEAD.JS: ${response.status} ${response.statusText}`);
                 return null;
             }
 

@@ -1,19 +1,20 @@
 import winston from "winston";
 
-const logger = winston.createLogger({
-    level: 'info',
-    format: winston.format.json(),
+
+export const logger = winston.createLogger({
+    level: process.env.NODE_ENV === "production" ? "info" : "debug",
+    format: winston.format.combine(
+        winston.format(info => ({...info, level: info.level.toUpperCase()}))(),
+        winston.format.align(),
+        winston.format.colorize({ all: true }),
+        winston.format.errors({stack: true}),
+        winston.format.prettyPrint(),
+        winston.format.simple(),
+        winston.format.splat(),
+        winston.format.timestamp({format: "YYYY-MM-DD HH:mm:ss A"}),
+        winston.format.printf(
+            ({timestamp, level, message}) => `[${timestamp}] [${level}]:${message}`
+        )
+    ),
     transports: [new winston.transports.Console()],
 });
-
-export default logger;
-
-
-/* niveles de winston:
-logger.error('error');
-logger.warn('warn');
-logger.info('info');
-logger.verbose('verbose');
-logger.debug('debug');
-logger.silly('silly');
- */
