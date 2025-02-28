@@ -1,5 +1,16 @@
 import winston from "winston";
-
+/**
+ * Configured Winston logger instance for logging application messages.
+ *
+ * @constant {winston.Logger} logger
+ * @description This logger is set to "debug" level in development and "info" in production.
+ * It formats logs with timestamp, colorization, pretty printing, and error stack traces.
+ *
+ * @example
+ * logger.info("This is an info message");
+ * logger.debug("Debugging details...");
+ * logger.error("An error occurred!", new Error("Sample error"));
+ */
 
 export const logger = winston.createLogger({
     level: process.env.NODE_ENV === "production" ? "info" : "debug",

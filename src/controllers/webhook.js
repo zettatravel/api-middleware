@@ -2,24 +2,23 @@
 import app from "../../app.js";
 
 // Utility functions
-import { retryPattern } from "../utils/retryUtils.js";
-import { logger } from "../utils/logUtils.js";
-import { authenticateIfNeeded } from "../utils/authUtils.js";
+import {retryPattern} from "../utils/retryUtils.js";
+import {logger} from "../utils/logUtils.js";
+import {authenticateIfNeeded} from "../utils/authUtils.js";
 
 // TravelC services
-import { Booking } from "../services/travelC/booking.js";
-import { AuthTravelC } from "../services/travelC/authTravelC.js";
+import {Booking} from "../services/travelC/booking.js";
+import {AuthTravelC} from "../services/travelC/authTravelC.js";
 
 // Zoho services
-import { AuthZoho } from "../services/zoho/authZoho.js";
-import { Deal } from "../services/zoho/deal.js";
-import { Lead } from "../services/zoho/lead.js";
-import { Owner } from "../services/zoho/owner.js";
+import {AuthZoho} from "../services/zoho/authZoho.js";
+import {Deal} from "../services/zoho/deal.js";
+import {Lead} from "../services/zoho/lead.js";
+import {Owner} from "../services/zoho/owner.js";
 
 // Data mapping
-import { mapBookingToLead } from "../mappers/zoho/leadMapping.js";
-import { mapBookingToDeal } from "../mappers/zoho/dealMapping.js";
-
+import {mapBookingToLead} from "../mappers/zoho/leadMapping.js";
+import {mapBookingToDeal} from "../mappers/zoho/dealMapping.js";
 
 export class webhookController {
 
@@ -75,11 +74,11 @@ export class webhookController {
 
             //Creacion del nevo Lead
             try {
-                logger.info("Converting lead to deal...");
+                logger.debug("Creating new lead...");
                 lead = await Lead.createLead(newLead)
 
                 // verificacion de creacion de lead, mediante el patron "retry pattern"
-                logger.info("Verifying lead creation...");
+                logger.debug("Verifying lead creation...");
                 lead = await retryPattern(Lead.getLeadByEmail, [leadEmail], 6, 30000);
 
             } catch (error) {
@@ -92,26 +91,22 @@ export class webhookController {
 
         // una vez creado el lead y verificado correctamente se procede a realizar la conversion a deal
         // creacion del mapeo para convertir lead a deal
-        const newDeal = mapBookingToDeal(booking, OwnerId,lead)
-        logger.debug(`New deal mapped: ${newDeal.data[0].Deals.Deal_Name}}`);
+        const newDeal = mapBookingToDeal(booking, OwnerId, lead)
+        logger.debug(`New deal mapped: ${newDeal.data[0].Deals.Deal_Name}`);
 
         try {
-            const deal = await Lead.convertLead(newDeal, lead.data[0].id )
+            // creacion del deal
+            logger.debug("Converting lead to deal...");
+            const deal = await Lead.convertLead(newDeal, lead.data[0].id);
 
-            console.log('Deal Creado CONTROLLER.JS', deal);
-
-            const verificacionDeal = await retryPattern(Deal.getDealByEmail, [deal.data[0].Deals.toString()], 6, 10000);
-            // se realizan seis intentos cada 30 segundos para ver si se creo
-            console.log('verificacionDeal CONTROLLER.JS:', verificacionDeal);
+            logger.debug("Verifying convertion lead to deal...");
+            await retryPattern(Deal.getDealByEmail, [deal.data[0].Deals.toString()], 6, 10000);
 
         } catch (error) {
-            console.error("Deal No Creado CONTROLLER.JS", error);
+            logger.error("Failed to convert deal.", error);
         }
 
-        // se realizan seis intentos cada 30 segundos para ver si se creo
-        //console.log('verificacionDeal CONTROLLER.JS:', verificacionDeal);
-
-        console.log('Fin del Controller CONTROLLER.JS')
+        logger.info("Controller execution completed.");
 
     }
 }

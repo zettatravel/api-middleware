@@ -1,5 +1,17 @@
-// Constante donde se mapea la informacion de bookings y User para crear un Lead
 import {toCapitalizedCase} from "../../utils/stringUtils.js";
+
+/**
+ * Maps a booking object and user ID to a lead format compatible with the CRM system.
+ *
+ * @function mapBookingToLead
+ * @param {Object} booking - The booking object containing reservation and customer details.
+ * @param {string} id_user - The ID of the user (Owner) associated with the lead.
+ * @returns {Object} - The mapped lead object formatted for the CRM.
+ *
+ * @example
+ * const lead = mapBookingToLead(bookingData, "123456");
+ * console.log(lead);
+ */
 
 export const mapBookingToLead = (booking, id_user) => {
     return {

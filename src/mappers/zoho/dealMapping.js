@@ -1,6 +1,20 @@
 import {formatDate} from "../../utils/dateUtils.js";
 import {toCapitalizedCase} from "../../utils/stringUtils.js";
 
+/**
+ * Maps a booking object to a deal format compatible with the CRM system.
+ *
+ * @function mapBookingToDeal
+ * @param {Object} booking - The booking object containing reservation details.
+ * @param {string} id_user - The ID of the user (Owner) associated with the deal.
+ * @param {Object} lead - The lead object containing additional customer information.
+ * @returns {Object} - The mapped deal object formatted for the CRM.
+ *
+ * @example
+ * const deal = mapBookingToDeal(bookingData, "123456", leadData);
+ * console.log(deal);
+ */
+
 export const mapBookingToDeal = (booking, id_user, lead) => {
     return {
         data: [
@@ -35,20 +49,3 @@ export const mapBookingToDeal = (booking, id_user, lead) => {
     };
 };
 
-/*
-
-console.log(booking.closedtourservice[0].name);
-
-
-
-"Account_Name": {
-                "name": "Zetta Travel Group Travelc",
-                "id": "6382205000018251091"
-            },
-
-
-            Account_Name:{
-                    name:
-                    id:
-                }
- */
