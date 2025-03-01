@@ -2,7 +2,7 @@ import app from "../../../app.js";
 import fetch from "node-fetch";
 import {logger} from "../../utils/logUtils.js";
 
-export class Lead {
+export class Leads {
 
     //servicio para obtener todos los leads
 

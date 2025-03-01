@@ -13,8 +13,8 @@ import {AuthTravelC} from "../services/travelC/authTravelC.js";
 // Zoho services
 import {AuthZoho} from "../services/zoho/authZoho.js";
 import {Deals} from "../services/zoho/deals.js";
-import {Lead} from "../services/zoho/lead.js";
-import {Owner} from "../services/zoho/owner.js";
+import {Leads} from "../services/zoho/leads.js";
+import {Owners} from "../services/zoho/owners.js";
 
 // Data mapping
 import {mapBookingToLead} from "../mappers/zoho/leadMapping.js";
@@ -57,12 +57,12 @@ export class webhookController {
 
         // Creacion de la variable Owner Id para recuperar el id del Owner
         logger.debug("recovering Owner ID...");
-        const OwnerId = await Owner.getOwner(OwnerEmail)
+        const OwnerId = await Owners.getOwner(OwnerEmail)
         logger.debug(`Owner ID: ${OwnerId}`);
 
         //Realizar la busqueda del lead por email
         logger.debug("Checking if lead exists...");
-        let lead = await Lead.getLeadByEmail(leadEmail);
+        let lead = await Leads.getLeadByEmail(leadEmail);
 
         //verificacion del lead (si existe)
         if (!lead) {
@@ -75,11 +75,11 @@ export class webhookController {
             //Creacion del nevo Lead
             try {
                 logger.debug("Creating new lead...");
-                lead = await Lead.createLead(newLead)
+                lead = await Leads.createLead(newLead)
 
                 // verificacion de creacion de lead, mediante el patron "retry pattern"
                 logger.debug("Verifying lead creation...");
-                lead = await retryPattern(Lead.getLeadByEmail, [leadEmail], 6, 30000);
+                lead = await retryPattern(Leads.getLeadByEmail, [leadEmail], 6, 30000);
 
             } catch (error) {
                 logger.error("Failed to create lead.", error);
@@ -97,7 +97,7 @@ export class webhookController {
         try {
             // creacion del deal
             logger.debug("Converting lead to deal...");
-            const deal = await Lead.convertLead(newDeal, lead.data[0].id);
+            const deal = await Leads.convertLead(newDeal, lead.data[0].id);
 
             logger.debug("Verifying convertion lead to deal...");
             await retryPattern(Deals.getDealByEmail, [deal.data[0].Deals.toString()], 6, 10000);

@@ -1,7 +1,7 @@
 import app from "../../../app.js";
 import {logger} from "../../utils/logUtils.js";
 
-export class Owner {
+export class Owners {
 
     /**
      * Retrieves the Zoho CRM user ID based on the given email.
