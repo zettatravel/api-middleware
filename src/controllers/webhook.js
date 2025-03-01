@@ -7,7 +7,7 @@ import {logger} from "../utils/logUtils.js";
 import {authenticateIfNeeded} from "../utils/authUtils.js";
 
 // TravelC services
-import {Booking} from "../services/travelC/booking.js";
+import {Bookings} from "../services/travelC/bookings.js";
 import {AuthTravelC} from "../services/travelC/authTravelC.js";
 
 // Zoho services
@@ -41,7 +41,7 @@ export class webhookController {
         await authenticateIfNeeded("TravelC", app.locals.timeTokenTravelC, () => AuthTravelC.auth(micrositeId));
 
         //realizar la busqueda de reserva
-        const booking = await Booking.getBookings(bookingReference, micrositeId);
+        const booking = await Bookings.getBookings(bookingReference, micrositeId);
         logger.debug(`Boojing Id: ${booking.id}`);
 
         //almacenar el correo del lead de la reserva

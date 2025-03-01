@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import app from "../../../app.js";
 import {logger} from "../../utils/logUtils.js";
 
-export class Booking {
+export class Bookings {
 
     /**
      * Fetches booking details from the TravelC API.
