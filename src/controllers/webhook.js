@@ -12,7 +12,7 @@ import {AuthTravelC} from "../services/travelC/authTravelC.js";
 
 // Zoho services
 import {AuthZoho} from "../services/zoho/authZoho.js";
-import {Deal} from "../services/zoho/deal.js";
+import {Deals} from "../services/zoho/deals.js";
 import {Lead} from "../services/zoho/lead.js";
 import {Owner} from "../services/zoho/owner.js";
 
@@ -100,7 +100,7 @@ export class webhookController {
             const deal = await Lead.convertLead(newDeal, lead.data[0].id);
 
             logger.debug("Verifying convertion lead to deal...");
-            await retryPattern(Deal.getDealByEmail, [deal.data[0].Deals.toString()], 6, 10000);
+            await retryPattern(Deals.getDealByEmail, [deal.data[0].Deals.toString()], 6, 10000);
 
         } catch (error) {
             logger.error("Failed to convert deal.", error);

@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import app from "../../../app.js";
 import {logger} from "../../utils/logUtils.js";
 
-export class Deal {
+export class Deals {
 
     //servicio para obtner todos los deals
     static getDeals = async () => {
