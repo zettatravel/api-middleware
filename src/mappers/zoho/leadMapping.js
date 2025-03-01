@@ -5,7 +5,7 @@ import {toCapitalizedCase} from "../../utils/stringUtils.js";
  *
  * @function mapBookingToLead
  * @param {Object} booking - The booking object containing reservation and customer details.
- * @param {string} id_user - The ID of the user (Owner) associated with the lead.
+ * @param {string} OwnerId - The ID of the user (Owner) associated with the lead.
  * @returns {Object} - The mapped lead object formatted for the CRM.
  *
  * @example
@@ -13,12 +13,12 @@ import {toCapitalizedCase} from "../../utils/stringUtils.js";
  * console.log(lead);
  */
 
-export const mapBookingToLead = (booking, id_user) => {
+export const mapBookingToLead = (booking, OwnerId) => {
     return {
         data: [
             {
                 Owner: {
-                    id: id_user // Id del Owner o User
+                    id: OwnerId // Id del Owner o User
                 },
                 Phone: `${booking.contactPerson.phoneCountryCode ?? ""}${booking.contactPerson.phone ?? ""}`, // Celular
                 Mobile: `${booking.contactPerson.phoneCountryCode ?? ""}${booking.contactPerson.phone ?? ""}`, // Celular

@@ -17,23 +17,25 @@
  * const data = await retryPattern(getData, [123], 5, 3000);
  * console.log(data); // Logs fetched data or null if not found after retries.
  */
+import {logger} from "./logUtils.js";
 
 export async function retryPattern(fetchFunction, params = [], attempts, timeOut) {
     // Helper function to create a delay
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     for (let i = 0; i < attempts; i++) {
-        console.log(`⏳ Esperando ${timeOut / 1000} segundos antes del próximo intento...`);
+        logger.debug(`Waiting ${timeOut / 1000} seconds before retry...`);
+
         await delay(timeOut);
 
         const verificacion = await fetchFunction(...params);
 
         if (verificacion) {
-            console.log(`✅ Registro encontrado en intento ${i + 1}`);
+            logger.info(`Record found in attempt ${i + 1}`);
             return verificacion;
         }
     }
 
-    console.log('⚠️ No se encontró el registro después de varios intentos.');
+    logger.warn('All retry attempts failed. No record found.');
     return null;
 }

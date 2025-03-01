@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import app from "../../../app.js";
+import {logger} from "../../utils/logUtils.js";
 
 export class Deal {
 
@@ -37,10 +38,14 @@ export class Deal {
         }
     }
 
-
-
+    /**
+     * Retrieves a deal from Zoho CRM by its ID.
+     * @param {string} id - The deal ID to search for.
+     * @returns {Promise<object|null>} - The deal data or null if not found.
+     */
     static getDealByEmail = async (id) => {
         try {
+            logger.debug(`Fetching deal with ID: ${id} from Zoho CRM...`);
             const response = await fetch(`${process.env.ZOHO_BASE_URL}/v2/Deals/search?criteria=(id:equals:${id})`, {
                 method: 'GET',
                 headers: {
@@ -53,7 +58,7 @@ export class Deal {
 
             // Respuesta no existosa
             if (!response.ok) {
-                console.error(`Error en la respuesta getDealByEmail LEAD.JS: ${response.status} ${response.statusText}`);
+                logger.error(`Failed to fetch deal. Status: ${response.status} - ${response.statusText}`);
                 return null;
             }
 
@@ -62,20 +67,18 @@ export class Deal {
 
             //si la respuesta es vacia
             if (!responseText) {
-                console.error("No hay coincidencias de correo getLeadByEmail LEAD.JS");
+                logger.warn(`No deal found with ID: ${id}`);
                 return null;
             }
 
             // Convertir a JSON solo si tiene contenido
+            logger.info(`Deal retrieved successfully.`);
             return JSON.parse(responseText);
 
-        } catch (err) {
-            console.log(`error al obtener la response ${err}`);
+        } catch (error) {
+            logger.error("Error fetching deal from Zoho CRM:", { error });
             return null;
         }
     }
-
-
-
 
 }

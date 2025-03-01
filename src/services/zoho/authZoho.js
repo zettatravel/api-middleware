@@ -1,9 +1,14 @@
 import fetch from "node-fetch";
 import FormData from 'form-data';
 import app from "../../../app.js";
+import {logger} from "../../utils/logUtils.js";
 
 export class AuthZoho {
 
+    /**
+     * Authenticates with Zoho API using the refresh token.
+     * Retrieves and stores a new access token.
+     */
     static auth = async () => {
 
         const formData = new FormData();
@@ -13,7 +18,8 @@ export class AuthZoho {
         formData.append('grant_type', 'refresh_token');
 
         try {
-            const request = await fetch('https://accounts.zoho.com/oauth/v2/token',
+            logger.debug("Starting authentication with Zoho API...");
+            const response = await fetch('https://accounts.zoho.com/oauth/v2/token',
                 {
                     method: 'POST',
                     headers: {
@@ -25,19 +31,20 @@ export class AuthZoho {
                     body: formData
                 })
 
-            const data = await request.json();
-            console.log('data.expires_in AUTH_ZOHO.JS: ', data.expires_in);
+            const data = await response.json();
+
+            if (!response.ok) {
+                logger.error(`Zoho authentication failed. Status: ${response.status} - ${response.statusText}`, { data });
+                return;
+            }
 
             app.locals.authTokenZoho = data.access_token;
-            //console.log("app.locals.authTokenTravelC AUTH.JS: ", app.locals.authTokenTravelC);
-
             app.locals.timeTokenZoho = Date.now() + (data.expires_in * 1000 ) ;
 
-            console.log("Date.now() AUTH_ZOHO.JS: ", Date.now());
-            console.log("app.locals.timeTokenZoho AUTH_ZOHO.JS: ", app.locals.timeTokenZoho);
+            logger.info(`Zoho authentication successful.`);
 
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            logger.error("Error during Zoho authentication:", { error });
         }
     }
 

@@ -1,16 +1,19 @@
 import app from "../../../app.js";
 import fetch from "node-fetch";
+import {logger} from "../../utils/logUtils.js";
 
 export class Lead {
 
-
     //servicio para obtener todos los leads
 
-
-
-    //servicio para obtener Lead por correo
+    /**
+     * Retrieves a lead from Zoho CRM by email.
+     * @param {string} email - The email address to search for.
+     * @returns {Promise<object|null>} - The lead data or null if not found.
+     */
     static getLeadByEmail = async (email) => {
         try {
+            logger.debug(`Fetching lead with email: ${email} from Zoho CRM...`);
             const response = await fetch(`${process.env.ZOHO_BASE_URL}/v7/Leads/search?criteria=(Email:equals:${email})`, {
                 method: 'GET',
                 headers: {
@@ -23,7 +26,7 @@ export class Lead {
 
             // Respuesta no existosa
             if (!response.ok) {
-                console.error(`Error en la respuesta getLeadByEmail LEAD.JS: ${response.status} ${response.statusText}`);
+                logger.error(`Failed to fetch lead. Status: ${response.status} - ${response.statusText}`);
                 return null;
             }
 
@@ -32,25 +35,30 @@ export class Lead {
 
             //si la respuesta es vacia
             if (!responseText) {
-                console.error("No hay coincidencias de correo getLeadByEmail LEAD.JS");
+                logger.warn(`No lead found with email: ${email}`);
                 return null;
             }
 
             // Convertir a JSON solo si tiene contenido
+            logger.info(`Lead retrieved successfully.`);
             return JSON.parse(responseText);
 
-        } catch (err) {
-            console.log(`error al obtener la response ${err}`);
+        } catch (error) {
+            logger.error("Error fetching lead from Zoho CRM:", {error});
             return null;
         }
     }
 
-    //servicio para crear un Lead
+    /**
+     * Creates a new lead in Zoho CRM.
+     * @param {object} newLead - The lead data to be created.
+     * @returns {Promise<object|null>} - The response data or null if an error occurs.
+     */
     static createLead = async (newLead) => {
-        console.log('app.locals.authTokenZoho LEAD.JS:', app.locals.authTokenZoho)
+        logger.debug("Start to create a new lead in Zoho CRM...");
 
         try {
-            const request = await fetch('https://www.zohoapis.com/crm/v2/Leads', {
+            const response = await fetch('https://www.zohoapis.com/crm/v2/Leads', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Zoho-oauthtoken ${app.locals.authTokenZoho}`,
@@ -61,27 +69,31 @@ export class Lead {
             });
 
             // Validar si la respuesta es exitosa
-            if (!request.ok) {
-                console.error(`Error en la respuesta createLead LEAD.JS: ${request.status} ${request.statusText}`);
+            if (!response.ok) {
+                logger.error(`Failed to create lead. Status: ${response.status} - ${response.statusText}`);
                 return null;
             }
 
             // Convertir la respuesta a JSON
-            const responseData = await request.json();
-            console.log('Lead creado correctamente: ', JSON.stringify(responseData, null, 2));
+            const responseData = await response.json();
+            logger.info("Lead successfully created.");
 
             return responseData;
 
-
-        } catch (err) {
-            console.log(`error al obtener la response ${err}`);
+        } catch (error) {
+            logger.error("Error while creating lead in Zoho CRM:", { error });
             return null;
         }
 
     }
 
-    //servicio para convertir un lead
-    static convertLead = async (newDeal,id_lead) => {
+    /**
+     * Converts a lead into a deal in Zoho CRM.
+     * @param {object} newDeal - The deal data to be created.
+     * @param {string} id_lead - The ID of the lead to convert.
+     * @returns {Promise<object|null>} - The response data or null if an error occurs.
+     */
+    static convertLead = async (newDeal, id_lead) => {
         console.log('app.locals.authTokenZoho LEAD.JS:', app.locals.authTokenZoho)
 
         try {
@@ -107,7 +119,6 @@ export class Lead {
             console.log('Deal creado correctamente: ', JSON.stringify(responseData, null, 2));
 
             return responseData;
-
 
         } catch (err) {
             console.log(`error al obtener la response ${err}`);

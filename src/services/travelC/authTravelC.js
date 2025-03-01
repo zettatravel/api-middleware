@@ -1,15 +1,19 @@
 import fetch from "node-fetch";
 import app from "../../../app.js";
+import {logger} from "../../utils/logUtils.js";
 
 export class AuthTravelC {
 
-    //servicio para autenticarse con booking
+    /**
+     * Authenticates with the TravelC API using provided credentials and microsite ID.
+     *
+     * @param {string} micrositeId - The ID of the microsite for authentication.
+     * @returns {Promise<void>}
+     */
     static auth = async (micrositeId) => {
         try {
-            console.log("Entrando en authTravelC.auth() con micrositeId AUTH_TRAVELC.JS: ", micrositeId);
-            console.log("process.env.TRAVELC_BASE_URL AUTH_TRAVELC.JS: ", process.env.TRAVELC_BASE_URL);
-
-            const request = await fetch(`${process.env.TRAVELC_BASE_URL}/authentication/authenticate`,
+            logger.debug(`Starting authentication process for microsite: ${micrositeId}`);
+            const response = await fetch(`${process.env.TRAVELC_BASE_URL}/authentication/authenticate`,
                 {
                     method: 'POST',
                     headers: {
@@ -24,23 +28,21 @@ export class AuthTravelC {
                     })
                 });
 
+            const data = await response.json();
 
-            const data = await request.json();
+            if (!response.ok) {
+                logger.info(`Authentication failed: ${data.message || "Unknown error"}`);
+                return null;
+            }
 
-
-            console.log('data.expirationInSeconds AUTH_TRAVELC.JS: ', data.expirationInSeconds);
+            logger.info(`Authentication successful.`);
 
             app.locals.authTokenTravelC = data.token;
-            //console.log("app.locals.authTokenTravelC AUTH.JS: ", app.locals.authTokenTravelC);
+            app.locals.timeTokenTravelC = Date.now() + (data.expirationInSeconds * 1000 ) - (600 * 1000);
 
-            // el token sera no de una hora de tiempo sino de diez minutos para evitar problemas con las busquedas
-            app.locals.timeTokenTravelC = Date.now() + (data.expirationInSeconds * 1000 ) - (600 * 1000) ;
-
-            console.log("Date.now() AUTH_TRAVELC.JS: ", Date.now());
-            console.log("app.locals.timeTokenTravelC AUTH_TRAVELC.JS: ", app.locals.timeTokenTravelC);
-
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            logger.error(`Authentication failed: ${error.message}`, { error });
+            return null;
         }
     }
 

@@ -107,6 +107,5 @@ export class webhookController {
         }
 
         logger.info("Controller execution completed.");
-
     }
 }

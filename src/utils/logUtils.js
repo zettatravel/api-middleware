@@ -1,4 +1,5 @@
 import winston from "winston";
+import * as path from "node:path";
 /**
  * Configured Winston logger instance for logging application messages.
  *
@@ -29,3 +30,4 @@ export const logger = winston.createLogger({
     ),
     transports: [new winston.transports.Console()],
 });
+
