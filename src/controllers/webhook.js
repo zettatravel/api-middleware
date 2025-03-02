@@ -49,15 +49,6 @@ export class webhookController {
         const booking = new Booking(bookingResponse);
         logger.debug(`Booking Id: ${booking.id}`);
 
-
-        /**
-         Aqui se realizara la prueba del new Bokking:
-
-        const bookingInstance = new Booking(booking);
-        logger.debug(JSON.stringify(bookingInstance, null, 2)); // Formateado para mejor legibilidad
-
-         **/
-
         //almacenar el correo del lead de la reserva
         const leadEmail = booking.contactPerson.email;
         logger.debug(`Lead email: ${leadEmail}`);
