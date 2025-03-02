@@ -53,7 +53,7 @@ export class Booking {
             }
         };
         this.insuranceservice = (data.insuranceservice || []).map(service => ({
-            id: service.id || "UNKNOWN",
+            id: service.id || null,
             bookingReference: service.bookingReference || "UNKNOWN",
             provider: service.provider || "UNKNOWN",
             pricebreakdown: {
@@ -65,7 +65,7 @@ export class Booking {
             }
         }));
         this.closedtourservice = (data.closedtourservice || []).map(service => ({
-            id: service.id || "UNKNOWN",
+            id: service.id || null,
             name: toCapitalizedCase(service.name) || "UNKNOWN",
         }))
     }
