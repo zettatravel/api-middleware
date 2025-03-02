@@ -20,6 +20,9 @@ import {Owners} from "../services/zoho/owners.js";
 import {mapBookingToLead} from "../mappers/zoho/leadMapping.js";
 import {mapBookingToDeal} from "../mappers/zoho/dealMapping.js";
 
+// Entities
+import {Booking} from "../entities/travelC/booking.js";
+
 export class webhookController {
 
     static async travelCBooking(req, res) {
@@ -41,15 +44,26 @@ export class webhookController {
         await authenticateIfNeeded("TravelC", app.locals.timeTokenTravelC, () => AuthTravelC.auth(micrositeId));
 
         //realizar la busqueda de reserva
-        const booking = await Bookings.getBookings(bookingReference, micrositeId);
-        logger.debug(`Boojing Id: ${booking.id}`);
+        const bookingResponse = await Bookings.getBookings(bookingReference, micrositeId);
+
+        const booking = new Booking(bookingResponse);
+        logger.debug(`Booking Id: ${booking.id}`);
+
+
+        /**
+         Aqui se realizara la prueba del new Bokking:
+
+        const bookingInstance = new Booking(booking);
+        logger.debug(JSON.stringify(bookingInstance, null, 2)); // Formateado para mejor legibilidad
+
+         **/
 
         //almacenar el correo del lead de la reserva
-        const leadEmail = booking.contactPerson.email.toString().toLowerCase()
+        const leadEmail = booking.contactPerson.email;
         logger.debug(`Lead email: ${leadEmail}`);
 
         //almacenar el correo del Owner o de quien realiza la reserva
-        const OwnerEmail = booking.user.email.toString().toLowerCase()
+        const OwnerEmail = booking.user.email;
         logger.debug(`Owner email: ${OwnerEmail}`);
 
         //realizar proceso de zoho
