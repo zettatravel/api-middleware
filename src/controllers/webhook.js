@@ -22,13 +22,14 @@ import {mapBookingToDeal} from "../mappers/zoho/dealMapping.js";
 
 // Entities
 import {Booking} from "../entities/travelC/booking.js";
+import {Lead} from "../entities/zoho/lead.js";
 
 export class webhookController {
 
     static async travelCBooking(req, res) {
 
         //recibir los datos del request
-        const {micrositeId, bookingReference, type} = req.body;
+        const {micrositeId, bookingReference} = req.body;
         logger.info(`Webhook received from: ${micrositeId}`);
 
         //verificar que el microsite sea Zettatravel
@@ -43,9 +44,8 @@ export class webhookController {
         //verificacion de autenticacion y autenticacion
         await authenticateIfNeeded("TravelC", app.locals.timeTokenTravelC, () => AuthTravelC.auth(micrositeId));
 
-        //realizar la busqueda de reserva
+        //realizar la busqueda de reserva y llamar constructor
         const bookingResponse = await Bookings.getBookings(bookingReference, micrositeId);
-
         const booking = new Booking(bookingResponse);
         logger.debug(`Booking Id: ${booking.id}`);
 
@@ -76,10 +76,12 @@ export class webhookController {
 
         //Realizar la busqueda del lead por email
         logger.debug("Checking if lead exists...");
-        let lead = await Leads.getLeadByEmail(leadEmail);
+        let leadResponse = await Leads.getLeadByEmail(leadEmail);
+        let lead = leadResponse ? new Lead(leadResponse) : null;
+
 
         //verificacion del lead (si existe)
-        if (!lead) {
+        if (!leadResponse) {
             logger.debug("Lead not found. Creating a new lead...");
 
             // creacion del mapeo para insertar el new lead
@@ -93,7 +95,8 @@ export class webhookController {
 
                 // verificacion de creacion de lead, mediante el patron "retry pattern"
                 logger.debug("Verifying lead creation...");
-                lead = await retryPattern(Leads.getLeadByEmail, [leadEmail], 6, 30000);
+                leadResponse = await retryPattern(Leads.getLeadByEmail, [leadEmail], 6, 30000);
+                lead = leadResponse ? new Lead(leadResponse) : null;
 
             } catch (error) {
                 logger.error("Failed to create lead.", error);
@@ -101,7 +104,7 @@ export class webhookController {
         }
 
         //se muestra en consola el id del Lead
-        logger.debug(`Lead ID: ${lead.data[0].id}`);
+        logger.debug(`Lead ID: ${lead[0].id}`);
 
         // una vez creado el lead y verificado correctamente se procede a realizar la conversion a deal
         // creacion del mapeo para convertir lead a deal
@@ -111,7 +114,7 @@ export class webhookController {
         try {
             // creacion del deal
             logger.debug("Converting lead to deal...");
-            const deal = await Leads.convertLead(newDeal, lead.data[0].id);
+            const deal = await Leads.convertLead(newDeal, lead[0].id);
 
             logger.debug("Verifying convertion lead to deal...");
             await retryPattern(Deals.getDealByEmail, [deal.data[0].Deals.toString()], 6, 10000);

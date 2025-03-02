@@ -1,14 +1,15 @@
 import {toCapitalizedCase} from "../../utils/stringUtils.js";
+import {formatDate} from "../../utils/dateUtils.js";
 
 export class Booking {
     constructor(data = {}) {
         this.id = data.id || null;
         this.bookingReference = data.bookingReference || null; //REQUIRED
         this.status = data.status || "UNKNOWN";
-        this.tripType = data.tripType || "UNKNOWN"; //REQUIRED
+        this.tripType = toCapitalizedCase(data.tripType) || "UNKNOWN"; //REQUIRED
         this.nightsCount = data.nightsCount || 0;
         this.destinationCount = data.destinationCount || 0; //REQUIRED
-        this.creationDate = data.creationDate || null; //REQUIRED
+        this.creationDate = data.creationDate || formatDate(new Date()?? null); //REQUIRED
         this.startDate = data.startDate || null; //REQUIRED
         this.endDate = data.endDate || null;
         this.adultCount = data.adultCount || 0; //REQUIRED

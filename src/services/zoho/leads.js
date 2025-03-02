@@ -90,14 +90,14 @@ export class Leads {
     /**
      * Converts a lead into a deal in Zoho CRM.
      * @param {object} newDeal - The deal data to be created.
-     * @param {string} id_lead - The ID of the lead to convert.
+     * @param {string} leadId - The ID of the lead to convert.
      * @returns {Promise<object|null>} - The response data or null if an error occurs.
      */
-    static convertLead = async (newDeal, id_lead) => {
+    static convertLead = async (newDeal, leadId) => {
         console.log('app.locals.authTokenZoho LEAD.JS:', app.locals.authTokenZoho)
 
         try {
-            const request = await fetch(`https://www.zohoapis.com/crm/v2/Leads/${id_lead}/actions/convert`, {
+            const request = await fetch(`https://www.zohoapis.com/crm/v2/Leads/${leadId}/actions/convert`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Zoho-oauthtoken ${app.locals.authTokenZoho}`,
