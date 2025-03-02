@@ -20,7 +20,6 @@ export const authenticateIfNeeded = async (serviceName, tokenExpirationTime, aut
         logger.debug(`${serviceName} token expired. Authenticating...`);
         try {
             await authFunction();
-            logger.info(`${serviceName} authentication successful.`);
         } catch (error) {
             logger.error(`${serviceName} authentication failed.`, error);
         }
