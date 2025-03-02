@@ -20,9 +20,10 @@ app.disable('x-powered-by')
 
 const PORT = process.env.PORT ?? 3000
 
-app.get('/', (req, res) => {
-    res.json({message: "Hello World"})
-})
+/*
+Prueba de que
+app.get('/', (req, res) => {res.json({message: "Hello World"})})
+*/
 
 app.use('/webhooks', webhooksRouter);
 
@@ -33,7 +34,6 @@ app.locals.timeTokenZoho = Date.now();
 
 
 app.listen(PORT, () => {
-
     logger.debug(`Server running on http://localhost:${PORT}`);
     logger.debug(`Enviroment: ${process.env.NODE_ENV}`);
 });
