@@ -36,7 +36,7 @@ export class Owners {
                 return null;
             }
 
-            logger.info("User found in Zoho CRM.");
+            logger.info("Owner found in Zoho CRM.");
             return user.id;
 
         } catch (error) {
