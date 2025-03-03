@@ -16,6 +16,7 @@ import {toCapitalizedCase} from "../../utils/stringUtils.js";
  */
 
 export const mapBookingToDeal = (booking, OwnerId, lead) => {
+
     return {
         data: [
             {
@@ -25,7 +26,7 @@ export const mapBookingToDeal = (booking, OwnerId, lead) => {
                 assign_to: OwnerId, // ID del Owner
 
                 Deals: {
-                    Deal_Name: `${booking.bookingReference.toUpperCase() ?? ""} / ${booking.contactPerson.name.toUpperCase() ?? ""} ${booking.contactPerson.lastName.toUpperCase() ?? ""} / X ${booking.destinationCount ?? ""} / ${booking.closedtourservice.length > 0 ? booking.closedtourservice.map(service => service.name.toUpperCase()).join(" - ") : ""} / ${formatDate(booking.startDate) ?? ""}`,
+                    Deal_Name: formatDealName(booking),
                     Fecha_de_viaje: formatDate(booking.startDate ?? new Date()), // Fecha de viaje
                     Closing_Date: formatDate(booking.creationDate ?? new Date()), // Fecha de reserva (hoy)
                     Stage: "Qualification", // Estado de la reserva
@@ -38,7 +39,7 @@ export const mapBookingToDeal = (booking, OwnerId, lead) => {
                     Partner: OwnerId, // ID del Owner,
                     Tipo_De_Reserva: "Otros",
                     Asistencia: booking.insuranceservice.length > 0 ? ["SI"] : ["NO"],
-                    Total_Asistencia_Adicional: booking.insuranceservice.length > 0 ? booking.insuranceservice.reduce((total, service) => total + (service.pricebreakdown?.totalPrice?.microsite?.amount || 0), 0) : 0,
+                    Total_Asistencia_Adicional: calculateTotalAssistance(booking),
                     Destino_de_inter_s: lead[0].destinoDeInteres,
                     Fecha_creado_como_New_Lead: lead[0].createdTime,
                     N_mero_de_Pax: (booking.adultCount + booking.childCount + booking.infantCount).toString() ?? "1",
@@ -47,5 +48,36 @@ export const mapBookingToDeal = (booking, OwnerId, lead) => {
             }
         ]
     };
+};
+
+/**
+ * Formats the deal name based on the booking details.
+ *
+ * @param {Object} booking - The booking object containing reservation details.
+ * @returns {string} - Formatted deal name.
+ */
+const formatDealName = (booking) => {
+    const closedTourServices = booking.closedtourservice.length > 0
+        ? booking.closedtourservice.map(service => service.name.toUpperCase()).join(" - ")
+        : "";
+
+    return `${booking.bookingReference.toUpperCase() ?? ""} / ` +
+        `${booking.contactPerson.name.toUpperCase() ?? ""} ` +
+        `${booking.contactPerson.lastName.toUpperCase() ?? ""} / X ` +
+        `${booking.destinationCount ?? ""} / ` +
+        `${closedTourServices} / ` +
+        `${formatDate(booking.startDate) ?? ""}`;
+};
+
+/**
+ * Calculates the total amount for additional assistance services in the booking.
+ *
+ * @param {Object} booking - The booking object containing insurance service details.
+ * @returns {number} - The total amount for additional assistance.
+ */
+const calculateTotalAssistance = (booking) => {
+    return booking.insuranceservice.reduce(
+        (total, service) => total + (service.pricebreakdown?.totalPrice?.microsite?.amount || 0), 0
+    );
 };
 

@@ -21,7 +21,7 @@ app.disable('x-powered-by')
 const PORT = process.env.PORT ?? 3000
 
 /*
-Prueba de que
+Prueba de que funciona
 app.get('/', (req, res) => {res.json({message: "Hello World"})})
 */
 
