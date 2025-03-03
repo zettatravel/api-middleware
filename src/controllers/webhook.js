@@ -31,23 +31,28 @@ export class webhookController {
         //recibir los datos del request
         const {micrositeId, bookingReference} = req.body;
         logger.info(`Webhook received from: ${micrositeId}`);
+        res.status(200).json({message: 'Webhook received'});
 
         //verificar que el microsite sea Zettatravel
-        if (micrositeId !== 'zettatravel') {
-            logger.info(`The microsite is different, the request has ended`)
-            return res.status(200).json({message: 'Webhook received'});
+        if (micrositeId !== process.env.TRAVELC_MICROSITE_ID) {
+            logger.warn(`The microsite is different, the request has ended`);
+            return null
         }
 
-        res.status(200).json({message: 'Webhook received'});
-        logger.debug(`Checking TravelC token expiration...`);
-
         //verificacion de autenticacion y autenticacion
+        logger.debug(`Checking TravelC token expiration...`);
         await authenticateIfNeeded("TravelC", app.locals.timeTokenTravelC, () => AuthTravelC.auth(micrositeId));
 
         //realizar la busqueda de reserva y llamar constructor
         const bookingResponse = await Bookings.getBookings(bookingReference, micrositeId);
         const booking = new Booking(bookingResponse);
         logger.debug(`Booking Id: ${booking.id}`);
+
+        // Verificar que la reserva (Booking) provenga de la agencia Zetta Travel Group
+        if(booking.user.agency.externalId !== process.env.TRAVELC_EXTERNAL_ID){
+            logger.warn(`The microsite external Id is different, the request has ended`)
+            return null;
+        }
 
         //almacenar el correo del lead de la reserva
         const leadEmail = booking.contactPerson.email;

@@ -39,6 +39,7 @@ export class Booking {
             email: data.user?.email.toLowerCase() || "UNKNOWN",
             agency: {
                 name: toCapitalizedCase(data.user?.agency?.name) || "UNKNOWN",
+                externalId: data.user?.agency?.externalId || null,
             },
         };
         this.emergencyContact = {
