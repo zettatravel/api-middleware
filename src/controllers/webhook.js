@@ -29,8 +29,8 @@ export class webhookController {
     static async travelCBooking(req, res) {
 
         //recibir los datos del request
-        const {micrositeId, bookingReference} = req.body;
-        logger.info(`Webhook received from: ${micrositeId}`);
+        const {micrositeId, bookingReference, type} = req.body;
+        logger.info(`Webhook received from: ${micrositeId} - ${type}`);
         res.status(200).json({message: 'Webhook received'});
 
         //verificar que el microsite sea Zettatravel
