@@ -22,7 +22,11 @@ export class webhookController {
 
         //recibir los datos del request
         const {micrositeId, bookingReference, type} = req.body;
+<<<<<<< HEAD
         logger.info(`Webhook received from: ${micrositeId}`);
+=======
+        logger.info(`Webhook received from: ${micrositeId} - ${type}`);
+>>>>>>> a45181e90bd6c8c2e4864225b32a839a25bbe4a1
         res.status(200).json({message: 'Webhook received'});
 
         //verificar que el microsite sea Zettatravel
