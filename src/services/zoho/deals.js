@@ -44,8 +44,9 @@ export class Deals {
      * @returns {Promise<object|null>} - The deal data or null if not found.
      */
     static getDealByEmail = async (id) => {
+        logger.debug(`Fetching deal with ID: ${id} from Zoho CRM...`);
         try {
-            logger.debug(`Fetching deal with ID: ${id} from Zoho CRM...`);
+
             const response = await fetch(`${process.env.ZOHO_BASE_URL}/v2/Deals/search?criteria=(id:equals:${id})`, {
                 method: 'GET',
                 headers: {

@@ -110,18 +110,23 @@ export class Leads {
 
             // Validar si la respuesta es exitosa
             if (!response.ok) {
-                logger.error(`Convert lead failed: ${response.status} ${response.statusText}`);
+                const errorText = await response.text(); // Captura el cuerpo de la respuesta si hay un error
+                logger.error(`Convert lead failed: ${response.status} ${response.statusText}. Response: ${errorText}`);
                 return null;
             }
 
             // Convertir la respuesta a JSON
             const responseData = await response.json();
-            logger.info(`Lead successfully converted.`);
+            logger.info(`Lead successfully converted. Response: ${JSON.stringify(responseData, null, 2)}`);
 
             return responseData;
 
         } catch (error) {
-            logger.error(`convertLead encountered an error: ${error}`);
+            logger.error(`convertLead encountered an error: ${error.message}`, {
+                stack: error.stack,
+                name: error.name,
+                cause: error.cause || "No cause available",
+            });
             return null;
         }
 

@@ -43,7 +43,8 @@ export const mapBookingToDeal = (booking, OwnerId, lead) => {
                     Destino_de_inter_s: lead[0].destinoDeInteres,
                     Fecha_creado_como_New_Lead: lead[0].createdTime,
                     N_mero_de_Pax: (booking.adultCount + booking.childCount + booking.infantCount).toString() ?? "1",
-                    Lead_Generado_en: lead[0].leadSource
+                    Lead_Generado_en: lead[0].leadSource,
+                    TIpo_de_Trato: ["Venta nueva"]
                 }
             }
         ]
