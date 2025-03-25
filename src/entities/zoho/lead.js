@@ -12,7 +12,7 @@ export class Lead {
             id: lead.id || null,
             company: lead.Company || null,
             email: lead.Email || null,
-            destinoDeInteres: lead.Destino_de_inter_s || "Otros", // REQUIRED
+            destinoDeInteres: lead.Destino_de_inter_s || "Otros",
             createdTime: formatDate(lead.Created_Time) || formatDate(new Date()),
             country: lead.Country || "UNKNOWN",
             campania: lead.Campa_a || "UNKNOWN",

@@ -43,7 +43,7 @@ export class Deals {
      * @param {string} id - The deal ID to search for.
      * @returns {Promise<object|null>} - The deal data or null if not found.
      */
-    static getDealByEmail = async (id) => {
+    static getDealById = async (id) => {
         logger.debug(`Fetching deal with ID: ${id} from Zoho CRM...`);
         try {
 

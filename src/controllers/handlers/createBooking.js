@@ -82,7 +82,7 @@ export const handleCreate = async (booking) => {
         const deal = await Leads.convertLead(newDeal, lead[0].id);
 
         logger.debug("Verifying convertion lead to deal...");
-        await retryPattern(Deals.getDealByEmail, [deal.data[0].Deals.toString()], 6, 10000);
+        await retryPattern(Deals.getDealById, [deal.data[0].Deals.toString()], 6, 10000);
 
     } catch (error) {
         logger.error("Failed to convert deal.", error);
