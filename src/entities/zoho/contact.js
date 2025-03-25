@@ -1,15 +1,15 @@
 import {toCapitalizedCase} from "../../utils/stringUtils.js";
 import {formatDate} from "../../utils/dateUtils.js";
 
-export class Deal {
+export class Contact {
     constructor(data = {}) {
-        return (data.data || []).map(deal => ({
+        return (data.data || []).map(contact => ({
             owner: {
-                name: deal.Owner?.name || null,
-                id: deal.Owner?.id || null,
-                email: deal.Owner?.email || null,
+                name: contact.Owner?.name || null,
+                id: contact.Owner?.id || null,
+                email: contact.Owner?.email || null,
             },
-            id: deal.id || null,
+            id: contact.id || null,
             email: contact.Email || null,
             destinoDeInteres: contact.Destino_de_inter_s || "Otros",
             createdTime: formatDate(contact.Created_Time) || formatDate(new Date()),

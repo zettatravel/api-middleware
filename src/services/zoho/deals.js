@@ -4,6 +4,41 @@ import {logger} from "../../utils/logUtils.js";
 
 export class Deals {
 
+    //servicio para crear un deal
+
+    static createDeal = async (newDeal) => {
+        logger.debug("Start to create a new deal in Zoho CRM...");
+
+        try {
+            const response = await fetch('https://www.zohoapis.com/crm/v2/Deals', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Zoho-oauthtoken ${app.locals.authTokenZoho}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newDeal)
+
+            });
+
+            // Validar si la respuesta es exitosa
+            if (!response.ok) {
+                logger.error(`Failed to create deal. Status: ${response.status} - ${response.statusText}`);
+                return null;
+            }
+
+            // Convertir la respuesta a JSON
+            const responseData = await response.json();
+            logger.info("Deal successfully created.");
+
+            return responseData;
+
+        } catch (error) {
+            logger.error("Error while creating Deal in Zoho CRM:", { error });
+            return null;
+        }
+
+    }
+
     //servicio para obtner todos los deals
     static getDeals = async () => {
         try {
