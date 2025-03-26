@@ -35,7 +35,7 @@ export class AuthTravelC {
                 return null;
             }
 
-            logger.info(` TravelC Authentication successful.`);
+            logger.info(`TravelC Authentication successful.`);
 
             app.locals.authTokenTravelC = data.token;
             app.locals.timeTokenTravelC = Date.now() + (data.expirationInSeconds * 1000 ) - (600 * 1000);
