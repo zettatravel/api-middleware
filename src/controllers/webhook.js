@@ -69,7 +69,6 @@ export class webhookController {
             logger.warn(`Unknown webhook type: ${type}`);
         }
 
-
         logger.info("Controller execution completed.");
     }
 }
