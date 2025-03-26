@@ -23,8 +23,10 @@ export const mapBookingAndLeadToDeal = (booking, OwnerId, lead) => {
                 overwrite: false,
                 notify_lead_owner: false,
                 notify_new_entity_owner: false,
-                assign_to: OwnerId, // ID del Owner
-
+                assign_to: OwnerId,
+                Created_By: {
+                    id: OwnerId
+                },
                 Deals: {
                     Deal_Name: formatDealName(booking),
                     Fecha_de_viaje: formatDate(booking.startDate ?? new Date()), // Fecha de viaje
@@ -60,7 +62,12 @@ export const mapBookingAndContactToDeal = (booking, OwnerId, contact) => {
             {
                 Owner: {
                     id: OwnerId,
-
+                },
+                Contact_Name: {
+                    id: contact[0].id
+                },
+                Created_By: {
+                    id: OwnerId
                 },
                 Deal_Name: formatDealName(booking),
                 Fecha_de_viaje: formatDate(booking.startDate ?? new Date()), // Fecha de viaje
@@ -86,6 +93,44 @@ export const mapBookingAndContactToDeal = (booking, OwnerId, contact) => {
         ]
     };
 };
+
+
+export const mapBookingAndDealToNewDeal = (booking, OwnerId, deal) => {
+
+    return {
+        data: [
+            {
+                Owner: {
+                    id: OwnerId,
+                },
+                Modified_By: {
+                    id: OwnerId
+                },
+                Deal_Name: formatDealName(booking),
+                Fecha_de_viaje: formatDate(booking.startDate ?? new Date()), // Fecha de viaje
+                Closing_Date: formatDate(booking.creationDate ?? new Date()), // Fecha de reserva (hoy)
+                Stage: "Qualification", // Estado de la reserva
+                Contacto_de_Emergencia: booking.emergencyContact.emergencyContactName,
+                Tel_fono_Contacto_de_emergencia: booking.emergencyContact.emergencyContactPhone,
+                Amount: booking.pricebreakdown.totalPrice.microsite.amount, // Monto total
+                Description: "Deal Generado de forma automatica",
+                Currency: booking.pricebreakdown.totalPrice.microsite.currency,
+                Ingeniero_Preventa: OwnerId, // ID del Owner
+                Partner: OwnerId, // ID del Owner,
+                Tipo_De_Reserva: "Otros",
+                Asistencia: booking.insuranceservice.length > 0 ? ["SI"] : ["NO"],
+                Total_Asistencia_Adicional: calculateTotalAssistance(booking),
+                Destino_de_inter_s: deal[0].destinoDeInteres,
+                Fecha_creado_como_New_Lead: deal[0].createdTime,
+                N_mero_de_Pax: (booking.adultCount + booking.childCount + booking.infantCount).toString() ?? "1",
+                Lead_Generado_en: deal[0].leadSource,
+                TIpo_de_Trato: ["Venta nueva"],
+                C_digo_MTP: booking.bookingReference
+            }
+        ]
+    };
+};
+
 
 /**
  * Formats the deal name based on the booking details.

@@ -14,6 +14,8 @@ import {handleCreate} from "./handlers/createBooking.js";
 
 // Entities
 import {Booking} from "../entities/travelC/booking.js";
+import {handleModify} from "./handlers/modifyBooking.js";
+import {AuthZoho} from "../services/zoho/authZoho.js";
 
 
 export class webhookController {
@@ -51,13 +53,17 @@ export class webhookController {
         // Definir estrategias según el tipo de webhook
         const webhookActions = {
             CREATED: handleCreate,
-            //MODIFIED: handleUpdate,
+            MODIFIED: handleModify,
             //CANCELED: handleDelete
         };
 
         //realizar procedimiento segun tipo de operacion para ejecutar la acción correspondiente
         const action = webhookActions[type];
         if (action) {
+            //realizar proceso de zoho
+            await authenticateIfNeeded("Zoho", app.locals.timeTokenZoho, AuthZoho.auth);
+
+            //seguir con el proceso dependiendo el tipo
             await action(booking);
         } else {
             logger.warn(`Unknown webhook type: ${type}`);

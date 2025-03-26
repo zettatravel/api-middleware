@@ -117,4 +117,79 @@ export class Deals {
         }
     }
 
+
+    static getDealByBookingReference = async (BookingReference) => {
+        try {
+            logger.debug(`Fetching Deal with Booking reference: ${BookingReference} from Zoho CRM...`);
+            const response = await fetch(`${process.env.ZOHO_BASE_URL}/v7/Deals/search?criteria=(C_digo_MTP:equals:${BookingReference})`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Zoho-oauthtoken ${app.locals.authTokenZoho}`,
+                    'Accept': '*/*',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive'
+                }
+            });
+
+            // Respuesta no existosa
+            if (!response.ok) {
+                logger.error(`Failed to fetch Deal. Status: ${response.status} - ${response.statusText}`);
+                return null;
+            }
+
+            //respuesta a texto
+            const responseText = await response.text();
+
+            //si la respuesta es vacia
+            if (!responseText) {
+                logger.warn(`No Deal found with Booking reference: ${BookingReference}`);
+                return null;
+            }
+
+            // Convertir a JSON solo si tiene contenido
+            logger.info(`Deal retrieved successfully.`);
+            return JSON.parse(responseText);
+
+        } catch (error) {
+            logger.error("Error fetching Deal from Zoho CRM:", {error});
+            return null;
+        }
+    }
+
+
+
+
+    static modifyDealById = async (dealModified, idDeal) => {
+        logger.debug("Start to modify a Deal in Zoho CRM...");
+
+        try {
+            const response = await fetch(`https://www.zohoapis.com/crm/v2/Deals/${idDeal}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Zoho-oauthtoken ${app.locals.authTokenZoho}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dealModified)
+
+            });
+
+            // Validar si la respuesta es exitosa
+            if (!response.ok) {
+                logger.error(`Failed to modify Deal. Status: ${response.status} - ${response.statusText}`);
+                return null;
+            }
+
+            // Convertir la respuesta a JSON
+            const responseData = await response.json();
+            logger.info("Deal successfully modified.");
+
+            return responseData;
+
+        } catch (error) {
+            logger.error("Error while modfying deal in Zoho CRM:", { error });
+            return null;
+        }
+
+    }
+
 }

@@ -1,13 +1,8 @@
-// Core application imports
-import app from "../../../app.js";
-
 // Utility functions
 import {retryPattern} from "../../utils/retryUtils.js";
 import {logger} from "../../utils/logUtils.js";
-import {authenticateIfNeeded} from "../../utils/authUtils.js";
 
 // Zoho services
-import {AuthZoho} from "../../services/zoho/authZoho.js";
 import {Deals} from "../../services/zoho/deals.js";
 import {Leads} from "../../services/zoho/leads.js";
 import {Owners} from "../../services/zoho/owners.js";
@@ -34,9 +29,6 @@ export const handleCreate = async (booking) => {
     const OwnerEmail = booking.user.email;
     logger.debug(`Owner email: ${OwnerEmail}`);
 
-    //realizar proceso de zoho
-    await authenticateIfNeeded("Zoho", app.locals.timeTokenZoho, AuthZoho.auth);
-
     // Creacion de la variable Owner Id para recuperar el id del Owner
     logger.debug("recovering Owner ID...");
     const OwnerId = await Owners.getOwner(OwnerEmail)
@@ -51,7 +43,7 @@ export const handleCreate = async (booking) => {
     if(contact){
 
         // una vez encontrado el contact y se procede a crear el deal
-        // creacion del mapeo para convertir lead a deal
+        // creacion del mapeo para convertir un deal de booking y contact
         const newDeal = mapBookingAndContactToDeal(booking, OwnerId, contact)
         logger.debug(`New deal mapped: ${newDeal.data[0].Deal_Name}`);
 
@@ -74,7 +66,6 @@ export const handleCreate = async (booking) => {
         let leadResponse = await Leads.getLeadByEmail(leadEmail);
         let lead = leadResponse ? new Lead(leadResponse) : null;
 
-
         //verificacion del lead (si existe)
         if (!leadResponse) {
             logger.debug("Lead not found. Creating a new lead...");
@@ -83,7 +74,7 @@ export const handleCreate = async (booking) => {
             const newLead = mapBookingToLead(booking, OwnerId);
             logger.debug(`New Lead mapped: ${newLead.data[0].First_Name}`);
 
-            //Creacion del nevo Lead
+            //Creacion del nUevo Lead
             try {
                 logger.debug("Creating new lead...");
                 lead = await Leads.createLead(newLead)
