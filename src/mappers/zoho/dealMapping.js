@@ -125,7 +125,7 @@ export const mapBookingAndDealToNewDeal = (booking, OwnerId, deal, stage) => {
                 N_mero_de_Pax: (booking.adultCount + booking.childCount + booking.infantCount).toString() ?? "1",
                 Lead_Generado_en: deal[0].leadSource,
                 TIpo_de_Trato: deal[0].tipoTrato,
-                C_digo_MTP: booking.bookingReference
+                C_digo_MTP: stage != null ? `${booking.bookingReference} CANCELED` : booking.bookingReference
             }
         ]
     };
