@@ -1,14 +1,18 @@
+// Utility functions
 import {logger} from "../../utils/logUtils.js";
+
+// Zoho services
 import {Deals} from "../../services/zoho/deals.js";
-import {Deal} from "../../entities/zoho/deal.js";
-import {mapBookingAndDealToNewDeal} from "../../mappers/zoho/dealMapping.js";
 import {Owners} from "../../services/zoho/owners.js";
 
-export const handleModify = async (booking) => {
+// Data mapping
+import {mapBookingAndDealToNewDeal} from "../../mappers/zoho/dealMapping.js";
 
-    //almacenar el correo del contact o lead de la reserva
-    const leadEmail = booking.contactPerson.email;
-    logger.debug(`Lead email: ${leadEmail}`);
+// Entities
+import {Deal} from "../../entities/zoho/deal.js";
+
+
+export const handleModify = async (booking) => {
 
     //almacenar el correo del Owner o de quien realiza la reserva
     const OwnerEmail = booking.user.email;

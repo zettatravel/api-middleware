@@ -16,6 +16,7 @@ import {handleCreate} from "./handlers/createBooking.js";
 import {Booking} from "../entities/travelC/booking.js";
 import {handleModify} from "./handlers/modifyBooking.js";
 import {AuthZoho} from "../services/zoho/authZoho.js";
+import {handleCancel} from "./handlers/cancelBooking.js";
 
 
 export class webhookController {
@@ -54,7 +55,7 @@ export class webhookController {
         const webhookActions = {
             CREATED: handleCreate,
             MODIFIED: handleModify,
-            //CANCELED: handleDelete
+            CANCELED: handleCancel
         };
 
         //realizar procedimiento segun tipo de operacion para ejecutar la acción correspondiente

@@ -95,7 +95,7 @@ export const mapBookingAndContactToDeal = (booking, OwnerId, contact) => {
 };
 
 
-export const mapBookingAndDealToNewDeal = (booking, OwnerId, deal) => {
+export const mapBookingAndDealToNewDeal = (booking, OwnerId, deal, stage) => {
 
     return {
         data: [
@@ -109,7 +109,7 @@ export const mapBookingAndDealToNewDeal = (booking, OwnerId, deal) => {
                 Deal_Name: formatDealName(booking),
                 Fecha_de_viaje: formatDate(booking.startDate ?? new Date()), // Fecha de viaje
                 Closing_Date: formatDate(booking.creationDate ?? new Date()), // Fecha de reserva (hoy)
-                Stage: "Qualification", // Estado de la reserva
+                Stage: stage ?? deal[0].stage,
                 Contacto_de_Emergencia: booking.emergencyContact.emergencyContactName,
                 Tel_fono_Contacto_de_emergencia: booking.emergencyContact.emergencyContactPhone,
                 Amount: booking.pricebreakdown.totalPrice.microsite.amount, // Monto total
@@ -117,14 +117,14 @@ export const mapBookingAndDealToNewDeal = (booking, OwnerId, deal) => {
                 Currency: booking.pricebreakdown.totalPrice.microsite.currency,
                 Ingeniero_Preventa: OwnerId, // ID del Owner
                 Partner: OwnerId, // ID del Owner,
-                Tipo_De_Reserva: "Otros",
+                Tipo_De_Reserva: deal[0].tipoReserva,
                 Asistencia: booking.insuranceservice.length > 0 ? ["SI"] : ["NO"],
                 Total_Asistencia_Adicional: calculateTotalAssistance(booking),
                 Destino_de_inter_s: deal[0].destinoDeInteres,
                 Fecha_creado_como_New_Lead: deal[0].createdTime,
                 N_mero_de_Pax: (booking.adultCount + booking.childCount + booking.infantCount).toString() ?? "1",
                 Lead_Generado_en: deal[0].leadSource,
-                TIpo_de_Trato: ["Venta nueva"],
+                TIpo_de_Trato: deal[0].tipoTrato,
                 C_digo_MTP: booking.bookingReference
             }
         ]
