@@ -26,7 +26,7 @@ export class webhookController {
         //recibir los datos del request
         const {micrositeId, bookingReference, type} = req.body;
 
-        logger.info(`Webhook received from: ${micrositeId} - ${type}`);
+        logger.info(`Webhook received from: ${micrositeId} - ${type} - ${bookingReference}`);
 
         res.status(200).json({message: 'Webhook received'});
 
