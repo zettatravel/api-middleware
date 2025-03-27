@@ -47,7 +47,7 @@ export class webhookController {
 
         // Verificar que la reserva (Booking) provenga de la agencia Zetta Travel Group
         if(booking.user.agency.externalId !== process.env.TRAVELC_EXTERNAL_ID){
-            logger.warn(`The microsite external Id is different, the request has ended`)
+            logger.warn(`The microsite external Id is different, the request has ended`);
             return null;
         }
 
