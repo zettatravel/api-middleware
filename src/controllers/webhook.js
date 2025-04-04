@@ -17,6 +17,8 @@ import {Booking} from "../entities/travelC/booking.js";
 import {handleModify} from "./handlers/modifyBooking.js";
 import {AuthZoho} from "../services/zoho/authZoho.js";
 import {handleCancel} from "./handlers/cancelBooking.js";
+import {Deal} from "../entities/zoho/deal.js";
+import {Deals} from "../services/zoho/deals.js";
 
 
 export class webhookController {
@@ -24,7 +26,7 @@ export class webhookController {
     static async travelCBooking(req, res) {
 
         //recibir los datos del request
-        const {micrositeId, bookingReference, type} = req.body;
+        let {micrositeId, bookingReference, type} = req.body;
 
         logger.info(`Webhook received from: ${micrositeId} - ${type} - ${bookingReference}`);
 
@@ -51,6 +53,19 @@ export class webhookController {
             return null;
         }
 
+        // Verificacion extra, si viene type: CREATED, pero ya existe EL Deal en zoho, cambiar a MODIFIED
+        // 1. realizar proceso de zoho
+        await authenticateIfNeeded("Zoho", app.locals.timeTokenZoho, AuthZoho.auth);
+        // 2. buscar el Deal en zoho por booking reference
+        logger.debug("Checking if deal exists...");
+        let dealResponse = await Deals.getDealByBookingReference(booking.bookingReference);
+        let deal = dealResponse ? new Deal(dealResponse) : null;
+        if (deal){
+            type = "MODIFIED" // se encontro un deal por ende se cambia el tipo de reserva generado en travelC
+        } else {
+            type = "CREATED"
+        }
+
         // Definir estrategias según el tipo de webhook
         const webhookActions = {
             CREATED: handleCreate,
@@ -61,8 +76,6 @@ export class webhookController {
         //realizar procedimiento segun tipo de operacion para ejecutar la acción correspondiente
         const action = webhookActions[type];
         if (action) {
-            //realizar proceso de zoho
-            await authenticateIfNeeded("Zoho", app.locals.timeTokenZoho, AuthZoho.auth);
 
             //seguir con el proceso dependiendo el tipo
             await action(booking);
