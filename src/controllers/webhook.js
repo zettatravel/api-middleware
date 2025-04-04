@@ -60,11 +60,10 @@ export class webhookController {
         logger.debug("Checking if deal exists...");
         let dealResponse = await Deals.getDealByBookingReference(booking.bookingReference);
         let deal = dealResponse ? new Deal(dealResponse) : null;
-        if (deal){
-            type = "MODIFIED" // se encontro un deal por ende se cambia el tipo de reserva generado en travelC
-        } else {
-            type = "CREATED"
-        }
+        // 3. Si se encontro un deal por ende se cambia el tipo de reserva generado en travelC
+        type = deal ? "MODIFIED" : "CREATED";
+
+
 
         // Definir estrategias según el tipo de webhook
         const webhookActions = {
