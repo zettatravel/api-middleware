@@ -10,12 +10,14 @@ export class Deal {
                 email: deal.Owner?.email || null,
             },
             id: deal.id || null,
+            name: deal.Deal_Name || null,
             leadGeneradoEn: deal.Lead_Generado_en || "UNKNOWN",
             tipoTrato: Array.isArray(deal.TIpo_de_Trato) ? deal.TIpo_de_Trato : [deal.TIpo_de_Trato || "Venta nueva"],
             destinoInteres: deal.Destino_de_inter_s || "UNKNOWN",
             fechaCreadoNewLead: deal.Fecha_creado_como_New_Lead || formatDate(new Date()),
             stage: deal.Stage || "Qualification",
-            tipoReserva: deal.Tipo_De_Reserva || "UNKNOWN"
+            tipoReserva: deal.Tipo_De_Reserva || "UNKNOWN",
+            amount: deal.Amount || 0
         }));
     }
 }

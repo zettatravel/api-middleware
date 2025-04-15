@@ -34,7 +34,7 @@ export const mapBookingAndLeadToDeal = (booking, OwnerId, lead) => {
                     Stage: "Qualification", // Estado de la reserva
                     Contacto_de_Emergencia: booking.emergencyContact.emergencyContactName,
                     Tel_fono_Contacto_de_emergencia: booking.emergencyContact.emergencyContactPhone,
-                    Amount: booking.pricebreakdown.totalPrice.microsite.amount, // Monto total
+                    Amount: 0, // Monto total desde reserva : booking.pricebreakdown.totalPrice.microsite.amount
                     Description: "Deal Generado de forma automatica",
                     Currency: booking.pricebreakdown.totalPrice.microsite.currency,
                     Ingeniero_Preventa: OwnerId, // ID del Owner
@@ -75,7 +75,7 @@ export const mapBookingAndContactToDeal = (booking, OwnerId, contact) => {
                 Stage: "Qualification", // Estado de la reserva
                 Contacto_de_Emergencia: booking.emergencyContact.emergencyContactName,
                 Tel_fono_Contacto_de_emergencia: booking.emergencyContact.emergencyContactPhone,
-                Amount: booking.pricebreakdown.totalPrice.microsite.amount, // Monto total
+                Amount: 0,
                 Description: "Deal Generado de forma automatica",
                 Currency: booking.pricebreakdown.totalPrice.microsite.currency,
                 Ingeniero_Preventa: OwnerId, // ID del Owner
@@ -93,7 +93,8 @@ export const mapBookingAndContactToDeal = (booking, OwnerId, contact) => {
         ]
     };
 };
-
+// creacion lo eja en cero
+// modificacion toa  el
 
 export const mapBookingAndDealToNewDeal = (booking, OwnerId, deal, stage) => {
 
@@ -106,13 +107,13 @@ export const mapBookingAndDealToNewDeal = (booking, OwnerId, deal, stage) => {
                 Modified_By: {
                     id: OwnerId
                 },
-                Deal_Name: formatDealName(booking),
+                Deal_Name: deal[0].name ?? formatDealName(booking),
                 Fecha_de_viaje: formatDate(booking.startDate ?? new Date()), // Fecha de viaje
                 Closing_Date: formatDate(booking.creationDate ?? new Date()), // Fecha de reserva (hoy)
                 Stage: stage ?? deal[0].stage,
                 Contacto_de_Emergencia: booking.emergencyContact.emergencyContactName,
                 Tel_fono_Contacto_de_emergencia: booking.emergencyContact.emergencyContactPhone,
-                Amount: booking.pricebreakdown.totalPrice.microsite.amount, // Monto total
+                Amount: deal[0].amount, // Monto total
                 Description: "Deal Generado de forma automatica",
                 Currency: booking.pricebreakdown.totalPrice.microsite.currency,
                 Ingeniero_Preventa: OwnerId, // ID del Owner
