@@ -34,9 +34,14 @@ API desarrollada en Node.js con Express para gestionar webhooks de reservas de T
 
 ## Uso
 
-Inicia el servidor:
+Inicia el servidor en modo producción:
    ```sh
-   npm start
+   npm run start
+   ```
+
+Inicia el servidor en modo desarrollo (con recarga automática):
+   ```sh
+   npm run dev
    ```
 
 El servidor estará disponible en `http://localhost:3000` (o el puerto configurado en las variables de entorno).
