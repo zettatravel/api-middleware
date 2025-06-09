@@ -95,12 +95,15 @@ Configura las siguientes variables en tu archivo `.env`:
 ## Estructura del Proyecto
 
 ```
-├── app.js                 # Punto de entrada de la aplicación
+├── app.js                 # Configuración principal de la app (middlewares, rutas, etc.)
+├── server.js              # Punto de entrada principal, donde se arranca el servidor
 ├── package.json           # Configuración del proyecto y dependencias
 ├── .env.example           # Archivo de ejemplo con las variables de entorno necesarias para configurar el proyecto
 ├── .env                   # Variables de entorno (no incluido en el repositorio)
 ├── .gitignore             # Archivos ignorados por git
 ├── src/
+│   ├── config/            # Configuraciones del poyecto
+│   │   └── cors.js        # Configuración de CORS 
 │   ├── controllers/       # Controladores de la aplicación
 │   │   ├── webhook.js     # Controlador principal de webhooks
 │   │   └── handlers/      # Manejadores específicos para cada tipo de operación
@@ -136,9 +139,9 @@ Configura las siguientes variables en tu archivo `.env`:
 │       ├── logUtils.js    # Configuración de logging
 │       ├── retryUtils.js  # Utilidades para reintentos
 │       └── stringUtils.js # Utilidades para manejo de strings
+├── docs/                  # Documentación del poyecto
+│   └── Guía...pdf         # Guia de uso del proyecto
 └── README.md
-└── docs/
-
 ```
 
 ## Scripts disponibles
