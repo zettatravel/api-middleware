@@ -97,6 +97,7 @@ Configura las siguientes variables en tu archivo `.env`:
 ```
 ├── app.js                 # Punto de entrada de la aplicación
 ├── package.json           # Configuración del proyecto y dependencias
+├── .env.example           # Archivo de ejemplo con las variables de entorno necesarias para configurar el proyecto
 ├── .env                   # Variables de entorno (no incluido en el repositorio)
 ├── .gitignore             # Archivos ignorados por git
 ├── src/
@@ -136,6 +137,8 @@ Configura las siguientes variables en tu archivo `.env`:
 │       ├── retryUtils.js  # Utilidades para reintentos
 │       └── stringUtils.js # Utilidades para manejo de strings
 └── README.md
+└── docs/
+
 ```
 
 ## Scripts disponibles
@@ -150,5 +153,7 @@ Configura las siguientes variables en tu archivo `.env`:
 - La aplicación responde inmediatamente a los webhooks y procesa las operaciones de forma asíncrona.
 - Se verifica que las reservas provengan del microsite y agencia correctos antes de procesarlas con las variables: 
   - TRAVELC_MICROSITE_ID: Id del micrositio
-  - TRAVELC_EXTERNAL_ID: Id externo de TravelC
+  - TRAVELC_EXTERNAL_ID: Id externo de TravelC}
+- Para información no técnica sobre el funcionamiento general de la API middleware, consulta el manual de uso incluido con el proyecto en la carpeta docs.
+
  
