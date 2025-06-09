@@ -1,4 +1,4 @@
-# API de Reservas (api-bookings)
+# API de Reservas (api-middleware)
 
 API desarrollada en Node.js con Express para gestionar webhooks de reservas de TravelC y sincronizarlas con Zoho CRM.
 
@@ -7,7 +7,7 @@ API desarrollada en Node.js con Express para gestionar webhooks de reservas de T
 - Recepción y procesamiento de webhooks de TravelC
 - Sincronización bidireccional con Zoho CRM
 - Gestión de reservas (creación, modificación, cancelación)
-- Autenticación automática con servicios externos
+- Autenticación automática con servicios externos (TravelC y Zoho CRM)
 - Logging configurable con Winston
 - CORS habilitado
 - Manejo de reintentos para operaciones críticas
@@ -57,7 +57,7 @@ Configura las siguientes variables en tu archivo `.env`:
   Entorno de ejecución (`development` o `production`).
 
 - `PORT`  
-  Puerto en el que se ejecuta la aplicación (por defecto: 3000).
+  Puerto en el que se ejecuta la aplicación (por defecto: 3000 en desarrollo).
 
 - `WEBHOOK_KEY`  
   Clave para validar los webhooks entrantes (se usa en la URL del endpoint).
@@ -148,4 +148,7 @@ Configura las siguientes variables en tu archivo `.env`:
 - No subas el archivo `.env` al repositorio por seguridad.
 - Los tokens de autenticación se almacenan en memoria y se renuevan automáticamente cuando expiran.
 - La aplicación responde inmediatamente a los webhooks y procesa las operaciones de forma asíncrona.
-- Se verifica que las reservas provengan del microsite y agencia correctos antes de procesarlas.
+- Se verifica que las reservas provengan del microsite y agencia correctos antes de procesarlas con las variables: 
+  - TRAVELC_MICROSITE_ID: Id del micrositio
+  - TRAVELC_EXTERNAL_ID: Id externo de TravelC
+ 
