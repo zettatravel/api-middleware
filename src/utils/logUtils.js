@@ -26,8 +26,10 @@ export const logger = winston.createLogger({
         winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss A" }),
         winston.format.printf(
             ({ timestamp, level, message }) =>
-                `[${timestamp}] [PID: ${process.pid}] [${level}]: ${message}`
+                `[${timestamp}] [${level}]: ${message}`
         )
     ),
-    transports: [new winston.transports.Console()],
+    transports: [
+        new winston.transports.Console()
+    ],
 });
