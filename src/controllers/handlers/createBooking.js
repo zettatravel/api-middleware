@@ -1,115 +1,112 @@
 // Utility functions
-import {retryPattern} from "../../utils/retryUtils.js";
-import {logger} from "../../utils/logUtils.js";
+import { retryPattern } from "../../utils/retryUtils.js";
+import { logger } from "../../utils/logUtils.js";
 
 // Zoho services
-import {Deals} from "../../services/zoho/deals.js";
-import {Leads} from "../../services/zoho/leads.js";
-import {Owners} from "../../services/zoho/owners.js";
+import { Deals } from "../../services/zoho/deals.js";
+import { Leads } from "../../services/zoho/leads.js";
+import { Owners } from "../../services/zoho/owners.js";
+import { Contacts } from "../../services/zoho/contact.js";
 
 // Data mapping
-import {mapBookingToLead} from "../../mappers/zoho/leadMapping.js";
-import {mapBookingAndContactToDeal, mapBookingAndLeadToDeal} from "../../mappers/zoho/dealMapping.js";
+import { mapBookingToLead } from "../../mappers/zoho/leadMapping.js";
+import {
+    mapBookingAndContactToDeal,
+    mapBookingAndLeadToDeal
+} from "../../mappers/zoho/dealMapping.js";
 
 // Entities
-import {Lead} from "../../entities/zoho/lead.js";
-import {Contacts} from "../../services/zoho/contact.js";
-import {Contact} from "../../entities/zoho/contact.js";
-
+import { Lead } from "../../entities/zoho/lead.js";
+import { Contact } from "../../entities/zoho/contact.js";
 
 export const handleCreate = async (booking) => {
     logger.info("Handling booking creation...");
-    // Lógica para crear lead y convertir a deal
 
-    //almacenar el correo del lead de la reserva
     const leadEmail = booking.contactPerson.email;
+    const ownerEmail = booking.user.email;
+
     logger.debug(`Lead email: ${leadEmail}`);
+    logger.debug(`Owner email: ${ownerEmail}`);
 
-    //almacenar el correo del Owner o de quien realiza la reserva
-    const OwnerEmail = booking.user.email;
-    logger.debug(`Owner email: ${OwnerEmail}`);
+    // Recuperar Owner ID
+    try {
+        logger.debug("Recovering Owner ID...");
+        const ownerId = await Owners.getOwner(ownerEmail);
+        logger.debug(`Owner ID: ${ownerId}`);
 
-    // Creacion de la variable Owner Id para recuperar el id del Owner
-    logger.debug("recovering Owner ID...");
-    const OwnerId = await Owners.getOwner(OwnerEmail)
-    logger.debug(`Owner ID: ${OwnerId}`);
+        // Intentar encontrar contacto
+        logger.debug("Checking if contact exists...");
+        const contactResponse = await Contacts.getContactByEmail(leadEmail);
+        const contact = contactResponse ? new Contact(contactResponse) : null;
 
-    // Realizar la busqueda del contact por email
-    logger.debug("Checking if contact exists...");
-    let contactResponse = await Contacts.getContactByEmail(leadEmail);
-    let contact = contactResponse ? new Contact(contactResponse) : null;
+        if (contact) {
+            const newDeal = mapBookingAndContactToDeal(booking, ownerId, contact);
+            logger.debug(`New deal mapped: ${newDeal.data[0].Deal_Name}`);
 
-    //verificacion del contact (si existe)
-    if(contact){
-
-        // una vez encontrado el contact y se procede a crear el deal
-        // creacion del mapeo para convertir un deal de booking y contact
-        const newDeal = mapBookingAndContactToDeal(booking, OwnerId, contact)
-        logger.debug(`New deal mapped: ${newDeal.data[0].Deal_Name}`);
-
-        try {
-            // creacion del deal
-            logger.debug("Creating deal...");
-            const deal = await Deals.createDeal(newDeal);
-
-            logger.debug("Verifying convertion lead to deal...");
-            await retryPattern(Deals.getDealById, [deal.data[0].details.id.toString()], 6, 10000);
-
-        } catch (error) {
-            logger.error("Failed to convert deal.", error);
-        }
-
-
-    }else {
-        //Realizar la busqueda del lead por email
-        logger.debug("Checking if lead exists...");
-        let leadResponse = await Leads.getLeadByEmail(leadEmail);
-        let lead = leadResponse ? new Lead(leadResponse) : null;
-
-        //verificacion del lead (si existe)
-        if (!leadResponse) {
-            logger.debug("Lead not found. Creating a new lead...");
-
-            // creacion del mapeo para insertar el new lead
-            const newLead = mapBookingToLead(booking, OwnerId);
-            logger.debug(`New Lead mapped: ${newLead.data[0].First_Name}`);
-
-            //Creacion del nUevo Lead
             try {
-                logger.debug("Creating new lead...");
-                lead = await Leads.createLead(newLead)
-
-                // verificacion de creacion de lead, mediante el patron "retry pattern"
-                logger.debug("Verifying lead creation...");
-                leadResponse = await retryPattern(Leads.getLeadByEmail, [leadEmail], 6, 30000);
-                lead = leadResponse ? new Lead(leadResponse) : null;
-
+                logger.debug("Creating deal...");
+                const deal = await Deals.createDeal(newDeal);
+                logger.debug("Verifying conversion...");
+                await retryPattern(Deals.getDealById, [deal.data[0].details.id.toString()], 6, 10000);
             } catch (error) {
-                logger.error("Failed to create lead.", error);
+                logger.error("Failed to create deal from contact.", error);
+            }
+
+        } else {
+            // Buscar lead por email
+            logger.debug("Checking if lead exists...");
+            let leadResponse = await Leads.getLeadByEmail(leadEmail);
+            let lead = leadResponse ? new Lead(leadResponse) : null;
+
+            if (!leadResponse || !Array.isArray(leadResponse) || leadResponse.length === 0) {
+                logger.debug("Lead not found. Creating a new lead...");
+
+                const newLead = mapBookingToLead(booking, ownerId);
+                logger.debug(`New Lead mapped: ${newLead.data[0].First_Name}`);
+
+                try {
+                    logger.debug("Creating new lead...");
+                    const createdLead = await Leads.createLead(newLead);
+
+                    if (!createdLead) {
+                        logger.error("Lead creation failed.");
+                        return;
+                    }
+
+                    logger.debug("Verifying lead creation...");
+                    leadResponse = await retryPattern(Leads.getLeadByEmail, [leadEmail], 6, 30000);
+                    if (!leadResponse || !Array.isArray(leadResponse) || !leadResponse[0]) {
+                        logger.error("Lead creation verification failed. No lead found after retries.");
+                        return;
+                    }
+
+                    lead = new Lead(leadResponse);
+                } catch (error) {
+                    logger.error("Failed to create and verify lead.", error);
+                    return;
+                }
+            }
+
+            logger.debug(`Lead ID: ${lead[0].id}`);
+
+            const newDeal = mapBookingAndLeadToDeal(booking, ownerId, lead);
+            logger.debug(`New deal mapped: ${newDeal.data[0].Deals.Deal_Name}`);
+
+            try {
+                logger.debug("Converting lead to deal...");
+                const deal = await Leads.convertLead(newDeal, lead[0].id);
+                if (!deal) {
+                    logger.error("Lead conversion to deal failed.");
+                    return;
+                }
+
+                logger.debug("Verifying deal conversion...");
+                await retryPattern(Deals.getDealById, [deal.data[0].Deals.toString()], 6, 10000);
+            } catch (error) {
+                logger.error("Failed to convert lead to deal.", error);
             }
         }
-
-        //se muestra en consola el id del Lead
-        logger.debug(`Lead ID: ${lead[0].id}`);
-
-        // una vez creado el lead y verificado correctamente se procede a realizar la conversion a deal
-        // creacion del mapeo para convertir lead a deal
-        const newDeal = mapBookingAndLeadToDeal(booking, OwnerId, lead)
-        logger.debug(`New deal mapped: ${newDeal.data[0].Deals.Deal_Name}`);
-
-        try {
-            // creacion del deal
-            logger.debug("Converting lead to deal...");
-            const deal = await Leads.convertLead(newDeal, lead[0].id);
-
-            logger.debug("Verifying convertion lead to deal...");
-            await retryPattern(Deals.getDealById, [deal.data[0].Deals.toString()], 6, 10000);
-
-        } catch (error) {
-            logger.error("Failed to convert deal.", error);
-        }
-
+    } catch (err) {
+        logger.error("Unexpected error in booking creation handler:", err);
     }
-
-
 };
