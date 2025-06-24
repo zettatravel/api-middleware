@@ -35,9 +35,10 @@ app.use((err, req, res, next) => {
         logger.warn('Request was aborted by the client.');
         res.status(400).json({ error: 'Request aborted unexpectedly' });
     } else {
-        next(err); // delega a otros manejadores de errores si existen
+        next(err);
     }
 });
+
 
 export default app;
 
