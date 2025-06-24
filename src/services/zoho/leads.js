@@ -24,27 +24,17 @@ export class Leads {
                 }
             });
 
-            // Respuesta no existosa
-            if (!response.ok) {
-                logger.error(`Failed to fetch lead. Status: ${response.status} - ${response.statusText}`);
-                return null;
-            }
-
-            //respuesta a texto
             const responseText = await response.text();
 
-            //si la respuesta es vacia
-            if (!responseText) {
+            if (!response.ok || !responseText) {
                 logger.warn(`No lead found with email: ${email}`);
                 return null;
             }
 
-            // Convertir a JSON solo si tiene contenido
             logger.info(`Lead retrieved successfully.`);
             return JSON.parse(responseText);
-
         } catch (error) {
-            logger.error("Error fetching lead from Zoho CRM:", {error});
+            logger.error("Error fetching lead from Zoho CRM:", { error });
             return null;
         }
     }
@@ -65,26 +55,22 @@ export class Leads {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(newLead)
-
             });
 
-            // Validar si la respuesta es exitosa
-            if (!response.ok) {
-                logger.error(`Failed to create lead. Status: ${response.status} - ${response.statusText}`);
+            const responseData = await response.json();
+
+            if (!response.ok || !responseData?.data?.length) {
+                logger.error(`Failed to create lead. Status: ${response.status}. Response: ${JSON.stringify(responseData)}`);
                 return null;
             }
 
-            // Convertir la respuesta a JSON
-            const responseData = await response.json();
             logger.info("Lead successfully created.");
-
             return responseData;
 
         } catch (error) {
             logger.error("Error while creating lead in Zoho CRM:", { error });
             return null;
         }
-
     }
 
     /**
@@ -94,7 +80,6 @@ export class Leads {
      * @returns {Promise<object|null>} - The response data or null if an error occurs.
      */
     static convertLead = async (newDeal, leadId) => {
-
         try {
             logger.debug("Start to convert lead to deal...");
             const response = await fetch(`https://www.zohoapis.com/crm/v2/Leads/${leadId}/actions/convert`, {
@@ -105,20 +90,16 @@ export class Leads {
                     'Connection': 'keep-alive'
                 },
                 body: JSON.stringify(newDeal)
-
             });
 
-            // Validar si la respuesta es exitosa
             if (!response.ok) {
-                const errorText = await response.text(); // Captura el cuerpo de la respuesta si hay un error
+                const errorText = await response.text();
                 logger.error(`Convert lead failed: ${response.status} ${response.statusText}. Response: ${errorText}`);
                 return null;
             }
 
-            // Convertir la respuesta a JSON
             const responseData = await response.json();
             logger.info(`Lead successfully converted. Response: ${JSON.stringify(responseData, null, 2)}`);
-
             return responseData;
 
         } catch (error) {
@@ -129,7 +110,6 @@ export class Leads {
             });
             return null;
         }
-
     }
 
 }
